@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The XML theme only governs the brief moment between process start and the
+    first Compose frame (the window background). Everything visible afterwards is
+    themed entirely in Compose via TickLogTheme. We extend a bare platform theme
+    so no Material Components XML dependency is required.
+-->
+<resources>
+    <style name="Theme.TickLog" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>

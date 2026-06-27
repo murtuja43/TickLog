@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The `-v26` qualifier is required: <adaptive-icon> is an API 26 feature, so
+    AAPT only accepts it in a v26+ resource folder. Lint's ObsoleteSdkInt notice
+    (our minSdk is 28) is therefore a false-positive here and is suppressed.
+-->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="ObsoleteSdkInt">
+    <background android:drawable="@color/ic_launcher_background" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+    <!-- Themed-icon support on Android 13+. -->
+    <monochrome android:drawable="@drawable/ic_launcher_foreground" />
+</adaptive-icon>

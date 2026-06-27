@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Legacy auto-backup rules (Android 11 and below).
+    The Room database and DataStore preferences are included so a user's full
+    history survives a device migration. Nothing is excluded.
+-->
+<full-backup-content>
+    <include domain="database" path="." />
+    <include domain="file" path="datastore/" />
+</full-backup-content>

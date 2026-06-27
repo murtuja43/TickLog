@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Centralised user-facing copy. Keeping every string here keeps the UI free of
+    hard-coded text and makes future localisation a drop-in translation.
+-->
+<resources>
+
+    <!-- App -->
+    <string name="app_name">TickLog</string>
+
+    <!-- Generic actions -->
+    <string name="action_continue">Continue</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_confirm">Confirm</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">Welcome to TickLog</string>
+    <string name="onboarding_subtitle">Choose the date range you want to track. You can fine-tune everything later.</string>
+    <string name="onboarding_start_date">Start date</string>
+    <string name="onboarding_end_date">End date</string>
+    <string name="onboarding_select_date">Select date</string>
+    <string name="onboarding_error_range">The end date must be on or after the start date.</string>
+
+    <!-- Home -->
+    <string name="home_empty_title">Nothing here yet</string>
+    <string name="home_empty_subtitle">Your checklist for this day will appear here.</string>
+    <string name="home_add_item">Add item</string>
+    <string name="home_previous_day">Previous day</string>
+    <string name="home_next_day">Next day</string>
+    <string name="home_fab_placeholder">Creating checklist items arrives in the next phase.</string>
+
+    <!-- Top-level navigation -->
+    <string name="destination_calendar">Calendar</string>
+    <string name="destination_history">History</string>
+    <string name="destination_statistics">Statistics</string>
+    <string name="destination_settings">Settings</string>
+    <string name="destination_pdf">Export PDF</string>
+
+    <!-- Placeholder feature screens -->
+    <string name="calendar_empty_title">Calendar coming soon</string>
+    <string name="calendar_empty_subtitle">Browse and jump to any day in your range.</string>
+    <string name="history_empty_title">No history yet</string>
+    <string name="history_empty_subtitle">Completed days will be archived here forever.</string>
+    <string name="statistics_empty_title">No statistics yet</string>
+    <string name="statistics_empty_subtitle">Streaks and completion trends will live here.</string>
+    <string name="pdf_empty_title">PDF export coming soon</string>
+    <string name="pdf_empty_subtitle">Export your full history to a shareable document.</string>
+
+    <!-- Settings -->
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_theme_system">Follow system</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_about">About</string>
+    <string name="settings_version">Version</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_app_logo">TickLog logo</string>
+    <string name="cd_navigate_up">Navigate up</string>
+
+</resources>

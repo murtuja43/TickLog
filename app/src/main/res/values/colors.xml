@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Only the handful of colours the Android *framework* needs before Compose
+    takes over (window background, launcher icon). All in-app theming is defined
+    in Kotlin (see core/designsystem/theme/Color.kt) and is strictly black & white.
+-->
+<resources>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+
+    <!-- Launcher icon background (monochrome, pure black). -->
+    <color name="ic_launcher_background">#FF000000</color>
+</resources>
