@@ -12,6 +12,12 @@
     <string name="action_continue">Continue</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_confirm">Confirm</string>
+    <string name="action_add">Add</string>
+    <string name="action_save">Save</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_duplicate">Duplicate</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_undo">Undo</string>
 
     <!-- Onboarding -->
     <string name="onboarding_title">Welcome to TickLog</string>
@@ -21,13 +27,40 @@
     <string name="onboarding_select_date">Select date</string>
     <string name="onboarding_error_range">The end date must be on or after the start date.</string>
 
+    <!-- Onboarding step 2: checklist builder -->
+    <string name="builder_title">Add your tasks</string>
+    <string name="builder_add_item">Add item</string>
+    <string name="builder_edit_item">Edit item</string>
+    <string name="builder_create">Create My Checklist</string>
+    <string name="builder_empty_title">No tasks yet</string>
+    <string name="builder_empty_subtitle">Add the tasks you want to track every day.</string>
+    <string name="builder_move_up">Move up</string>
+    <string name="builder_move_down">Move down</string>
+
+    <!-- Task input -->
+    <string name="task_title_label">Title</string>
+    <string name="task_note_label">Note (optional)</string>
+
     <!-- Home -->
-    <string name="home_empty_title">Nothing here yet</string>
-    <string name="home_empty_subtitle">Your checklist for this day will appear here.</string>
-    <string name="home_add_item">Add item</string>
+    <string name="home_empty_title">No tasks yet</string>
+    <string name="home_empty_subtitle">Add a task to start ticking off your day.</string>
+    <string name="home_create_first_task">Create your first task</string>
+    <string name="home_add_item">Add task</string>
     <string name="home_previous_day">Previous day</string>
     <string name="home_next_day">Next day</string>
-    <string name="home_fab_placeholder">Creating checklist items arrives in the next phase.</string>
+    <string name="home_toggle_task">Toggle task</string>
+    <string name="home_deleted_snackbar">Task deleted</string>
+    <string name="home_out_of_range_title">No checklist for this day</string>
+    <string name="home_out_of_range_subtitle">This day is outside the range you set up.</string>
+
+    <!-- Add / edit / delete task -->
+    <string name="add_task_title">Add task</string>
+    <string name="edit_task_title">Edit task</string>
+    <string name="apply_to_label">Apply to</string>
+    <string name="scope_today_only">This day only</string>
+    <string name="scope_today_and_future">This and all future days</string>
+    <string name="delete_dialog_title">Delete task?</string>
+    <string name="delete_dialog_message">\"%1$s\" can be brought back with Undo.</string>
 
     <!-- Top-level navigation -->
     <string name="destination_calendar">Calendar</string>
@@ -57,5 +90,7 @@
     <!-- Content descriptions -->
     <string name="cd_app_logo">TickLog logo</string>
     <string name="cd_navigate_up">Navigate up</string>
+    <string name="cd_state_completed">Completed</string>
+    <string name="cd_state_incomplete">Not completed</string>
 
 </resources>

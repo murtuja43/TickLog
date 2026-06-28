@@ -1,5 +1,13 @@
 package com.ticklog.core.navigation
 
+import java.time.LocalDate
+
+/** Navigation argument key: the range start, as an epoch day. */
+const val ARG_START: String = "startEpochDay"
+
+/** Navigation argument key: the range end, as an epoch day. */
+const val ARG_END: String = "endEpochDay"
+
 /**
  * The complete set of navigation destinations in the app.
  *
@@ -12,8 +20,18 @@ package com.ticklog.core.navigation
  */
 sealed class TickDestination(val route: String) {
 
-    /** First-run experience; shown until onboarding is completed. */
+    /** Onboarding step 1: choosing the tracking date range. */
     data object Onboarding : TickDestination("onboarding")
+
+    /**
+     * Onboarding step 2: the checklist builder, parameterised by the chosen
+     * range (passed as epoch-day arguments so the step is fully restorable).
+     */
+    data object OnboardingItems : TickDestination("onboarding_items/{$ARG_START}/{$ARG_END}") {
+        /** Builds the concrete route for a specific [start]/[end] range. */
+        fun routeFor(start: LocalDate, end: LocalDate): String =
+            "onboarding_items/${start.toEpochDay()}/${end.toEpochDay()}"
+    }
 
     /** The primary daily screen. */
     data object Home : TickDestination("home")

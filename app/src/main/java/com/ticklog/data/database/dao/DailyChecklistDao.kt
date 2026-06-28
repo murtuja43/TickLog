@@ -56,4 +56,18 @@ interface DailyChecklistDao {
         "SELECT id FROM daily_checklists WHERE template_id = :templateId AND date = :date LIMIT 1",
     )
     suspend fun findChecklistId(templateId: Long, date: LocalDate): Long?
+
+    /** The calendar date of a given day row, used to scope "future" edits. */
+    @Query("SELECT date FROM daily_checklists WHERE id = :dailyChecklistId LIMIT 1")
+    suspend fun getDate(dailyChecklistId: Long): LocalDate?
+
+    /** All day rows for a template on or after [fromDate], used to fan out new tasks. */
+    @Query(
+        "SELECT * FROM daily_checklists " +
+            "WHERE template_id = :templateId AND date >= :fromDate ORDER BY date ASC",
+    )
+    suspend fun getChecklistsFromDate(
+        templateId: Long,
+        fromDate: LocalDate,
+    ): List<DailyChecklistEntity>
 }

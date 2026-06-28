@@ -2,6 +2,7 @@ package com.ticklog.di
 
 import android.content.Context
 import androidx.room.Room
+import com.ticklog.data.database.ALL_MIGRATIONS
 import com.ticklog.data.database.TickLogDatabase
 import com.ticklog.data.database.dao.ChecklistItemDao
 import com.ticklog.data.database.dao.ChecklistTemplateDao
@@ -40,6 +41,7 @@ object DatabaseModule {
             // History must never be silently destroyed: we deliberately do NOT
             // call fallbackToDestructiveMigration(). Schema changes ship with
             // explicit, tested Migrations instead.
+            .addMigrations(*ALL_MIGRATIONS)
             .build()
 
     @Provides

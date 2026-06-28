@@ -7,11 +7,14 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.ticklog.ui.feature_calendar.CalendarScreen
 import com.ticklog.ui.feature_history.HistoryScreen
 import com.ticklog.ui.feature_home.HomeScreen
+import com.ticklog.ui.feature_onboarding.ChecklistBuilderScreen
 import com.ticklog.ui.feature_onboarding.OnboardingScreen
 import com.ticklog.ui.feature_pdf.PdfExportScreen
 import com.ticklog.ui.feature_settings.SettingsScreen
@@ -52,13 +55,30 @@ fun TickLogNavHost(
         composable(route = TickDestination.Onboarding.route) {
             OnboardingScreen(
                 windowSizeClass = windowSizeClass,
-                onOnboardingComplete = {
+                onContinue = { range ->
+                    navController.navigate(
+                        TickDestination.OnboardingItems.routeFor(range.start, range.end),
+                    )
+                },
+            )
+        }
+
+        composable(
+            route = TickDestination.OnboardingItems.route,
+            arguments = listOf(
+                navArgument(ARG_START) { type = NavType.LongType },
+                navArgument(ARG_END) { type = NavType.LongType },
+            ),
+        ) {
+            ChecklistBuilderScreen(
+                onChecklistCreated = {
                     navController.navigate(TickDestination.Home.route) {
-                        // Onboarding is one-shot: remove it from the back stack.
+                        // The whole onboarding flow is one-shot: clear it entirely.
                         popUpTo(TickDestination.Onboarding.route) { inclusive = true }
                         launchSingleTop = true
                     }
                 },
+                onNavigateUp = navController::navigateUp,
             )
         }
 

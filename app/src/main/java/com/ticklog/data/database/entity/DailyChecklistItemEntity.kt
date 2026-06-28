@@ -56,6 +56,10 @@ data class DailyChecklistItemEntity(
     @ColumnInfo(name = "title")
     val title: String,
 
+    /** Snapshot of the item's optional note at generation time. */
+    @ColumnInfo(name = "note")
+    val note: String? = null,
+
     /** Snapshot of the item's ordering at generation time. */
     @ColumnInfo(name = "position")
     val position: Int,

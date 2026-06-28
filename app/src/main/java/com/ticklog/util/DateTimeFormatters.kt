@@ -35,6 +35,10 @@ object DateTimeFormatters {
     /** Formats just the year of [date], e.g. "2026". */
     fun year(date: LocalDate): String = date.format(yearOnly)
 
+    /** A compact inclusive-range label, e.g. "27 Jun 2026 – 4 Jul 2026". */
+    fun rangeSummary(start: LocalDate, end: LocalDate): String =
+        "${medium(start)} – ${medium(end)}"
+
     /**
      * A friendly relative label for [date] measured against [today].
      *

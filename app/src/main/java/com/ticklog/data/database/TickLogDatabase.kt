@@ -36,7 +36,7 @@ import com.ticklog.data.database.entity.SettingsEntity
         CompletionHistoryEntity::class,
         SettingsEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)

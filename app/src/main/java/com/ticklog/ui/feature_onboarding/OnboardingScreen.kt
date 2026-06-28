@@ -42,6 +42,7 @@ import com.ticklog.core.designsystem.component.PrimaryButton
 import com.ticklog.core.designsystem.component.ResponsiveContainer
 import com.ticklog.core.designsystem.component.TickCard
 import com.ticklog.core.designsystem.theme.TickLogTheme
+import com.ticklog.domain.model.DateRange
 import com.ticklog.util.DateTimeFormatters
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -51,28 +52,28 @@ import java.time.LocalDate
 import java.time.ZoneOffset
 
 /**
- * Onboarding screen (stateful entry point).
+ * Onboarding step 1 (stateful entry point): choosing the date range.
  *
- * Collects state and the one-shot completion event from [OnboardingViewModel],
- * advancing the app via [onOnboardingComplete] exactly once when onboarding is
- * saved. All rendering is delegated to the stateless [OnboardingContent].
+ * Collects state and the one-shot "proceed" event from [OnboardingViewModel],
+ * advancing to the checklist builder via [onContinue] exactly once with the
+ * validated range. All rendering is delegated to the stateless [OnboardingContent].
  *
  * @param windowSizeClass current window size, used to widen the layout on tablets.
- * @param onOnboardingComplete invoked once after the range is persisted.
+ * @param onContinue invoked once with the chosen range to open the builder step.
  * @param modifier external layout modifier.
  */
 @Composable
 fun OnboardingScreen(
     windowSizeClass: WindowSizeClass,
-    onOnboardingComplete: () -> Unit,
+    onContinue: (DateRange) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: OnboardingViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // Advance exactly once when the ViewModel signals completion.
+    // Advance exactly once when the ViewModel emits the validated range.
     LaunchedEffect(viewModel) {
-        viewModel.onboardingCompleted.collect { onOnboardingComplete() }
+        viewModel.proceed.collect { range -> onContinue(range) }
     }
 
     OnboardingContent(

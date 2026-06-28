@@ -64,4 +64,20 @@ data class DateRange(
     /** Number of days in the range, inclusive of both ends (>= 1 when valid). */
     val lengthInDays: Long
         get() = java.time.temporal.ChronoUnit.DAYS.between(start, end) + 1
+
+    /** True when [date] falls within the inclusive range. */
+    operator fun contains(date: LocalDate): Boolean =
+        !date.isBefore(start) && !date.isAfter(end)
+
+    /**
+     * Every calendar date in the range, in chronological order (inclusive of both
+     * ends). Returns an empty list for an invalid range. This is the pure basis
+     * of day generation and is exhaustively unit-tested.
+     */
+    fun datesInclusive(): List<LocalDate> {
+        if (!isValid) return emptyList()
+        return generateSequence(start) { current ->
+            if (current.isBefore(end)) current.plusDays(1) else null
+        }.toList()
+    }
 }

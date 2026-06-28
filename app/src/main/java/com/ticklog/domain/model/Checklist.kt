@@ -33,13 +33,22 @@ data class ChecklistItem(
     val position: Int,
 )
 
-/** A single tickable task for one day. */
+/**
+ * A single tickable task for one day.
+ *
+ * @property isLinkedToTemplate whether this task descends from a template item.
+ *   Only linked tasks can be edited/deleted "for today and all future days";
+ *   standalone tasks (added or duplicated for a single day) are day-local. The
+ *   UI uses this to decide whether to offer a scope choice.
+ */
 data class DailyTask(
     val id: Long,
     val title: String,
+    val note: String?,
     val position: Int,
     val isCompleted: Boolean,
     val completedAt: Instant?,
+    val isLinkedToTemplate: Boolean,
 )
 
 /**

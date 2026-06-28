@@ -42,6 +42,22 @@ interface ChecklistItemDao {
     )
     suspend fun getActiveItemsForTemplate(templateId: Long): List<ChecklistItemEntity>
 
+    /** One-shot fetch of a template item by id. */
+    @Query("SELECT * FROM checklist_items WHERE id = :itemId")
+    suspend fun getById(itemId: Long): ChecklistItemEntity?
+
+    /** Highest position used in a template, or null when it has no items. */
+    @Query("SELECT MAX(position) FROM checklist_items WHERE template_id = :templateId")
+    suspend fun maxPosition(templateId: Long): Int?
+
+    /** Renames the canonical template item (used when propagating to future days). */
+    @Query("UPDATE checklist_items SET title = :title WHERE id = :itemId")
+    suspend fun updateTitle(itemId: Long, title: String)
+
+    /** Updates the canonical template item's note. */
+    @Query("UPDATE checklist_items SET description = :description WHERE id = :itemId")
+    suspend fun updateDescription(itemId: Long, description: String?)
+
     /** Archives an item (soft delete) so history that references it is preserved. */
     @Query("UPDATE checklist_items SET is_archived = 1 WHERE id = :itemId")
     suspend fun archive(itemId: Long)

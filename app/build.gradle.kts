@@ -68,6 +68,14 @@ android {
         }
     }
 
+    testOptions {
+        unitTests {
+            // Robolectric needs the merged manifest/resources to host an in-memory
+            // Room database in plain JVM unit tests.
+            isIncludeAndroidResources = true
+        }
+    }
+
     lint {
         // Treat lint findings strictly: any remaining warning fails the build,
         // so the codebase stays genuinely warning-free.
@@ -140,6 +148,12 @@ dependencies {
 
     // --- Unit tests ----------------------------------------------------------
     testImplementation(libs.junit)
+    testImplementation(libs.google.truth)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.core.ktx)
+    // Room's generated DAO/database code is exercised by the repository tests.
+    testImplementation(libs.androidx.room.runtime)
 
     // --- Instrumented tests --------------------------------------------------
     androidTestImplementation(libs.androidx.junit)

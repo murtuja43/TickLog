@@ -10,6 +10,7 @@ import com.ticklog.domain.model.ChecklistTemplate
 import com.ticklog.domain.model.CompletionRecord
 import com.ticklog.domain.model.DailyChecklist
 import com.ticklog.domain.model.DailyTask
+import com.ticklog.domain.model.DeletedTask
 
 /**
  * Pure mapping functions translating Room entities into domain models.
@@ -42,9 +43,11 @@ fun ChecklistItemEntity.toDomain(): ChecklistItem = ChecklistItem(
 fun DailyChecklistItemEntity.toDomain(): DailyTask = DailyTask(
     id = id,
     title = title,
+    note = note,
     position = position,
     isCompleted = isCompleted,
     completedAt = completedAt,
+    isLinkedToTemplate = sourceItemId != null,
 )
 
 /** Maps a joined day-with-items relation to the aggregate domain model. */
@@ -62,4 +65,28 @@ fun CompletionHistoryEntity.toDomain(): CompletionRecord = CompletionRecord(
     date = date,
     totalItems = totalItems,
     completedItems = completedItems,
+)
+
+/** Captures a task row as a [DeletedTask] undo snapshot before it is removed. */
+fun DailyChecklistItemEntity.toDeletedTask(): DeletedTask = DeletedTask(
+    id = id,
+    dailyChecklistId = dailyChecklistId,
+    sourceItemId = sourceItemId,
+    title = title,
+    note = note,
+    position = position,
+    isCompleted = isCompleted,
+    completedAt = completedAt,
+)
+
+/** Rebuilds the exact original row from a [DeletedTask] snapshot for undo. */
+fun DeletedTask.toEntity(): DailyChecklistItemEntity = DailyChecklistItemEntity(
+    id = id,
+    dailyChecklistId = dailyChecklistId,
+    sourceItemId = sourceItemId,
+    title = title,
+    note = note,
+    position = position,
+    isCompleted = isCompleted,
+    completedAt = completedAt,
 )
