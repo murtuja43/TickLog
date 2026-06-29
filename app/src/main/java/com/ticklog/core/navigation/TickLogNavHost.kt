@@ -72,7 +72,7 @@ fun TickLogNavHost(
         ) {
             ChecklistBuilderScreen(
                 onChecklistCreated = {
-                    navController.navigate(TickDestination.Home.route) {
+                    navController.navigate(TickDestination.Home.DEFAULT) {
                         // The whole onboarding flow is one-shot: clear it entirely.
                         popUpTo(TickDestination.Onboarding.route) { inclusive = true }
                         launchSingleTop = true
@@ -82,7 +82,15 @@ fun TickLogNavHost(
             )
         }
 
-        composable(route = TickDestination.Home.route) {
+        composable(
+            route = TickDestination.Home.route,
+            arguments = listOf(
+                navArgument(ARG_DATE) {
+                    type = NavType.LongType
+                    defaultValue = HOME_NO_DATE
+                },
+            ),
+        ) {
             HomeScreen(
                 windowSizeClass = windowSizeClass,
                 onNavigateToCalendar = { navController.navigateTo(TickDestination.Calendar) },
@@ -93,14 +101,20 @@ fun TickLogNavHost(
         }
 
         composable(route = TickDestination.Calendar.route) {
-            CalendarScreen(onNavigateUp = navController::navigateUp)
+            CalendarScreen(
+                onNavigateUp = navController::navigateUp,
+                onDaySelected = { date ->
+                    // Open the chosen day on Home, replacing the calendar + old Home.
+                    navController.navigate(TickDestination.Home.routeForDate(date)) {
+                        popUpTo(TickDestination.Home.route) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+            )
         }
 
         composable(route = TickDestination.History.route) {
-            HistoryScreen(
-                onNavigateUp = navController::navigateUp,
-                onExportPdf = { navController.navigateTo(TickDestination.PdfExport) },
-            )
+            HistoryScreen(onNavigateUp = navController::navigateUp)
         }
 
         composable(route = TickDestination.Statistics.route) {

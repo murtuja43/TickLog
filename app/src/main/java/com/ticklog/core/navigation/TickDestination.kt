@@ -8,6 +8,12 @@ const val ARG_START: String = "startEpochDay"
 /** Navigation argument key: the range end, as an epoch day. */
 const val ARG_END: String = "endEpochDay"
 
+/** Navigation argument key: an optional target day for Home, as an epoch day. */
+const val ARG_DATE: String = "date"
+
+/** Sentinel meaning "no explicit date — open today". */
+const val HOME_NO_DATE: Long = Long.MIN_VALUE
+
 /**
  * The complete set of navigation destinations in the app.
  *
@@ -33,8 +39,17 @@ sealed class TickDestination(val route: String) {
             "onboarding_items/${start.toEpochDay()}/${end.toEpochDay()}"
     }
 
-    /** The primary daily screen. */
-    data object Home : TickDestination("home")
+    /**
+     * The primary daily screen. Accepts an optional [ARG_DATE] so other screens
+     * (e.g. the calendar) can open a specific day; omitting it opens today.
+     */
+    data object Home : TickDestination("home?$ARG_DATE={$ARG_DATE}") {
+        /** Navigate here for today. */
+        const val DEFAULT: String = "home"
+
+        /** Navigate here to open a specific [date]. */
+        fun routeForDate(date: LocalDate): String = "home?$ARG_DATE=${date.toEpochDay()}"
+    }
 
     /** Month/range calendar overview (Phase 2). */
     data object Calendar : TickDestination("calendar")

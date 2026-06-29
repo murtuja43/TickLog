@@ -1,6 +1,7 @@
 package com.ticklog.util
 
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.time.temporal.ChronoUnit
@@ -26,6 +27,10 @@ object DateTimeFormatters {
     private val yearOnly: DateTimeFormatter =
         DateTimeFormatter.ofPattern("yyyy")
 
+    /** e.g. "June 2026" — the calendar month header. */
+    private val monthYearFormatter: DateTimeFormatter =
+        DateTimeFormatter.ofPattern("MMMM yyyy")
+
     /** Formats [date] as the headline form, e.g. "Saturday, 27 June". */
     fun headline(date: LocalDate): String = date.format(dayHeadline)
 
@@ -38,6 +43,9 @@ object DateTimeFormatters {
     /** A compact inclusive-range label, e.g. "27 Jun 2026 – 4 Jul 2026". */
     fun rangeSummary(start: LocalDate, end: LocalDate): String =
         "${medium(start)} – ${medium(end)}"
+
+    /** Formats a month, e.g. "June 2026" — the calendar header. */
+    fun monthYear(yearMonth: YearMonth): String = yearMonth.format(monthYearFormatter)
 
     /**
      * A friendly relative label for [date] measured against [today].

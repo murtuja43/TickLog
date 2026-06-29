@@ -3,7 +3,7 @@
     Centralised user-facing copy. Keeping every string here keeps the UI free of
     hard-coded text and makes future localisation a drop-in translation.
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- App -->
     <string name="app_name">TickLog</string>
@@ -69,15 +69,64 @@
     <string name="destination_settings">Settings</string>
     <string name="destination_pdf">Export PDF</string>
 
-    <!-- Placeholder feature screens -->
-    <string name="calendar_empty_title">Calendar coming soon</string>
-    <string name="calendar_empty_subtitle">Browse and jump to any day in your range.</string>
+    <!-- Empty states for the productivity screens -->
+    <string name="calendar_empty_title">Nothing to show yet</string>
+    <string name="calendar_empty_subtitle">Your days will appear here once you start tracking.</string>
     <string name="history_empty_title">No history yet</string>
-    <string name="history_empty_subtitle">Completed days will be archived here forever.</string>
-    <string name="statistics_empty_title">No statistics yet</string>
-    <string name="statistics_empty_subtitle">Streaks and completion trends will live here.</string>
+    <string name="history_empty_subtitle">Complete some tasks and your days will appear here.</string>
+    <string name="statistics_empty_title">No statistics available</string>
+    <string name="statistics_empty_subtitle">Complete some tasks to begin tracking your progress.</string>
     <string name="pdf_empty_title">PDF export coming soon</string>
     <string name="pdf_empty_subtitle">Export your full history to a shareable document.</string>
+
+    <!-- Calendar -->
+    <string name="calendar_previous_month">Previous month</string>
+    <string name="calendar_next_month">Next month</string>
+
+    <!-- History -->
+    <string name="history_search_placeholder">Search tasks and notes</string>
+    <string name="history_jump_to_date">Jump to date</string>
+    <string name="history_toggle_sort">Change order</string>
+    <string name="history_filter_all">All</string>
+    <string name="history_filter_completed">Completed</string>
+    <string name="history_filter_incomplete">Incomplete</string>
+    <string name="history_no_matches_title">No matching days</string>
+    <string name="history_no_matches_subtitle">Try a different search or filter.</string>
+    <!-- Two quantities and an adjective ("completed"), not a pluralisable noun. -->
+    <string name="history_completed_of_total" tools:ignore="PluralsCandidate">%1$d of %2$d completed</string>
+    <string name="history_section_completed">Completed (%1$d)</string>
+    <string name="history_section_incomplete">Incomplete (%1$d)</string>
+
+    <!-- Statistics -->
+    <string name="stat_overall_completion">Overall completion</string>
+    <string name="stat_average_daily_value">Average daily: %1$s</string>
+    <string name="stat_current_streak">Current streak</string>
+    <string name="stat_longest_streak">Longest streak</string>
+    <string name="stat_total_completed">Tasks completed</string>
+    <string name="stat_total_incomplete">Tasks incomplete</string>
+    <string name="stat_total_days">Checklist days</string>
+    <string name="stat_this_week">This week</string>
+    <string name="stat_this_month">This month</string>
+    <string name="stat_this_year">This year</string>
+    <string name="stat_chart_weekly">Weekly completion</string>
+    <string name="stat_chart_monthly">Monthly completion</string>
+    <string name="stat_chart_trend">Completion trend</string>
+    <string name="stat_achievements">Achievements</string>
+    <string name="stat_task_insights">Task insights</string>
+    <string name="stat_sort_best">Best</string>
+    <string name="stat_sort_worst">Worst</string>
+    <string name="stat_sort_alphabetical">A–Z</string>
+    <string name="stat_insight_counts">Completed %1$d • Skipped %2$d</string>
+    <string name="stat_insight_streak_last">Best streak %1$d • Last %2$s</string>
+    <string name="stat_insight_never">never</string>
+
+    <!-- Achievements -->
+    <string name="achievement_streak_7">7-day streak</string>
+    <string name="achievement_streak_30">30-day streak</string>
+    <string name="achievement_tasks_100">100 tasks</string>
+    <string name="achievement_tasks_365">365 tasks</string>
+    <string name="achievement_perfect_week">Perfect week</string>
+    <string name="achievement_perfect_month">Perfect month</string>
 
     <!-- Settings -->
     <string name="settings_appearance">Appearance</string>

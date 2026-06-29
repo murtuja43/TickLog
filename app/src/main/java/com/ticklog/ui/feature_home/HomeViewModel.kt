@@ -1,7 +1,10 @@
 package com.ticklog.ui.feature_home
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ticklog.core.navigation.ARG_DATE
+import com.ticklog.core.navigation.HOME_NO_DATE
 import com.ticklog.domain.model.DailyChecklist
 import com.ticklog.domain.model.DailyTask
 import com.ticklog.domain.model.DateRange
@@ -39,10 +42,20 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val checklistRepository: ChecklistRepository,
     observeUserPreferences: ObserveUserPreferencesUseCase,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    /** The day the app opens on; the pager anchors here. */
+    /** The day the pager is anchored on (the real "today"). */
     val today: LocalDate = LocalDate.now()
+
+    /**
+     * The day to open on first composition. Defaults to [today], but the calendar
+     * can deep-link to any date via the [ARG_DATE] navigation argument.
+     */
+    val initialDate: LocalDate = savedStateHandle.get<Long>(ARG_DATE)
+        ?.takeIf { it != HOME_NO_DATE }
+        ?.let { LocalDate.ofEpochDay(it) }
+        ?: today
 
     /**
      * The user's generated tracking range, or null until preferences load.

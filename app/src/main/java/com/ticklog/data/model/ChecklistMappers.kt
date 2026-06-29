@@ -5,12 +5,15 @@ import com.ticklog.data.database.entity.ChecklistTemplateEntity
 import com.ticklog.data.database.entity.CompletionHistoryEntity
 import com.ticklog.data.database.entity.DailyChecklistItemEntity
 import com.ticklog.data.database.relation.DailyChecklistWithItems
+import com.ticklog.data.database.relation.DaySummaryRow
+import com.ticklog.data.database.relation.TaskOccurrenceRow
 import com.ticklog.domain.model.ChecklistItem
 import com.ticklog.domain.model.ChecklistTemplate
 import com.ticklog.domain.model.CompletionRecord
 import com.ticklog.domain.model.DailyChecklist
 import com.ticklog.domain.model.DailyTask
 import com.ticklog.domain.model.DeletedTask
+import com.ticklog.domain.model.TaskOccurrence
 
 /**
  * Pure mapping functions translating Room entities into domain models.
@@ -77,6 +80,21 @@ fun DailyChecklistItemEntity.toDeletedTask(): DeletedTask = DeletedTask(
     position = position,
     isCompleted = isCompleted,
     completedAt = completedAt,
+)
+
+/** Maps an aggregated day-summary row to the domain completion record. */
+fun DaySummaryRow.toDomain(): CompletionRecord = CompletionRecord(
+    date = date,
+    totalItems = totalItems,
+    completedItems = completedItems,
+)
+
+/** Maps a task-occurrence row to its domain model. */
+fun TaskOccurrenceRow.toDomain(): TaskOccurrence = TaskOccurrence(
+    sourceItemId = sourceItemId,
+    title = title,
+    date = date,
+    isCompleted = isCompleted,
 )
 
 /** Rebuilds the exact original row from a [DeletedTask] snapshot for undo. */

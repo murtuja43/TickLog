@@ -1,10 +1,12 @@
 package com.ticklog.domain.repository
 
 import com.ticklog.domain.model.ChecklistTemplate
+import com.ticklog.domain.model.CompletionRecord
 import com.ticklog.domain.model.DailyChecklist
 import com.ticklog.domain.model.DateRange
 import com.ticklog.domain.model.DeletedTask
 import com.ticklog.domain.model.TaskDraft
+import com.ticklog.domain.model.TaskOccurrence
 import com.ticklog.domain.model.TaskScope
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
@@ -28,6 +30,25 @@ interface ChecklistRepository {
      * no template/day exists. Re-evaluates as the active template or day changes.
      */
     fun observeChecklistForDate(date: LocalDate): Flow<DailyChecklist?>
+
+    /**
+     * Observes a lightweight per-day completion summary for every generated day,
+     * in chronological order — the shared feed behind the calendar, history and
+     * statistics. Emits an empty list when no template exists.
+     */
+    fun observeDaySummaries(): Flow<List<CompletionRecord>>
+
+    /**
+     * Observes every template-linked task occurrence (task × day), the raw input
+     * for per-task insights. Emits an empty list when no template exists.
+     */
+    fun observeTaskOccurrences(): Flow<List<TaskOccurrence>>
+
+    /**
+     * Observes the distinct dates whose tasks match [query] in title or note,
+     * most recent first. A blank query yields an empty list.
+     */
+    fun searchDates(query: String): Flow<List<LocalDate>>
 
     // --- Creation -----------------------------------------------------------
 

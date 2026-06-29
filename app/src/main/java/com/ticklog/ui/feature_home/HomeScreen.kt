@@ -57,6 +57,7 @@ import com.ticklog.domain.model.TaskScope
 import com.ticklog.util.DateTimeFormatters
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 /**
  * Home screen — the primary daily surface and the heart of the app.
@@ -87,7 +88,13 @@ fun HomeScreen(
     val today = viewModel.today
     val scheduleRange by viewModel.scheduleRange.collectAsStateWithLifecycle()
 
-    val pagerState = rememberPagerState(initialPage = DAY_PAGER_ANCHOR) { DAY_PAGER_PAGE_COUNT }
+    // Start on the deep-linked day (from the calendar) or today by default.
+    val initialPage = remember(today, viewModel.initialDate) {
+        (DAY_PAGER_ANCHOR + ChronoUnit.DAYS.between(today, viewModel.initialDate))
+            .toInt()
+            .coerceIn(0, DAY_PAGER_PAGE_COUNT - 1)
+    }
+    val pagerState = rememberPagerState(initialPage = initialPage) { DAY_PAGER_PAGE_COUNT }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 

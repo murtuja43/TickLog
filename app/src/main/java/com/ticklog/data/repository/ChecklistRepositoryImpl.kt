@@ -14,10 +14,12 @@ import com.ticklog.data.model.toDeletedTask
 import com.ticklog.data.model.toDomain
 import com.ticklog.data.model.toEntity
 import com.ticklog.domain.model.ChecklistTemplate
+import com.ticklog.domain.model.CompletionRecord
 import com.ticklog.domain.model.DailyChecklist
 import com.ticklog.domain.model.DateRange
 import com.ticklog.domain.model.DeletedTask
 import com.ticklog.domain.model.TaskDraft
+import com.ticklog.domain.model.TaskOccurrence
 import com.ticklog.domain.model.TaskScope
 import com.ticklog.domain.repository.ChecklistRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -64,6 +66,39 @@ class ChecklistRepositoryImpl @Inject constructor(
                     .observeChecklistWithItems(templateId = template.id, date = date)
                     .map { relation -> relation?.toDomain() }
             }
+        }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun observeDaySummaries(): Flow<List<CompletionRecord>> =
+        forActiveTemplate { templateId ->
+            dailyChecklistDao.observeDaySummaries(templateId)
+                .map { rows -> rows.map { it.toDomain() } }
+        }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun observeTaskOccurrences(): Flow<List<TaskOccurrence>> =
+        forActiveTemplate { templateId ->
+            dailyChecklistDao.observeTaskOccurrences(templateId)
+                .map { rows -> rows.map { it.toDomain() } }
+        }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun searchDates(query: String): Flow<List<LocalDate>> {
+        val trimmed = query.trim()
+        if (trimmed.isEmpty()) return flowOf(emptyList())
+        return forActiveTemplate { templateId ->
+            dailyChecklistDao.searchDates(templateId, trimmed)
+        }
+    }
+
+    /**
+     * Follows the active template and switches to [block] for its id, emitting an
+     * empty list while no template exists. Shared by the read aggregates above.
+     */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun <T> forActiveTemplate(block: (Long) -> Flow<List<T>>): Flow<List<T>> =
+        templateDao.observeActiveTemplate().flatMapLatest { template ->
+            if (template == null) flowOf(emptyList()) else block(template.id)
         }
 
     // --- Creation -----------------------------------------------------------
