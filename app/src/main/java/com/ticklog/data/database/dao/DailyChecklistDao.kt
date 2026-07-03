@@ -116,4 +116,24 @@ interface DailyChecklistDao {
             "ORDER BY dc.date DESC",
     )
     fun searchDates(templateId: Long, query: String): Flow<List<LocalDate>>
+
+    /**
+     * All days (with their items) for a template within an inclusive range,
+     * fetched once (not observed) for building a PDF report.
+     */
+    @Transaction
+    @Query(
+        "SELECT * FROM daily_checklists " +
+            "WHERE template_id = :templateId AND date BETWEEN :start AND :end " +
+            "ORDER BY date ASC",
+    )
+    suspend fun getChecklistsWithItemsInRange(
+        templateId: Long,
+        start: LocalDate,
+        end: LocalDate,
+    ): List<DailyChecklistWithItems>
+
+    /** All day rows — used to serialise a full backup. */
+    @Query("SELECT * FROM daily_checklists")
+    suspend fun getAll(): List<DailyChecklistEntity>
 }

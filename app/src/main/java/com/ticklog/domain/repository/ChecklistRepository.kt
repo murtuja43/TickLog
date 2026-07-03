@@ -50,6 +50,12 @@ interface ChecklistRepository {
      */
     fun searchDates(query: String): Flow<List<LocalDate>>
 
+    /**
+     * One-shot fetch of every day (with its tasks) in the inclusive range, in
+     * chronological order — used to assemble a PDF report. Empty when no template.
+     */
+    suspend fun getChecklistsInRange(start: LocalDate, end: LocalDate): List<DailyChecklist>
+
     // --- Creation -----------------------------------------------------------
 
     /**

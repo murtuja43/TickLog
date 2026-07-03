@@ -11,12 +11,15 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.ticklog.core.designsystem.LocalAnimationsEnabled
+import com.ticklog.ui.feature_backup.BackupScreen
 import com.ticklog.ui.feature_calendar.CalendarScreen
 import com.ticklog.ui.feature_history.HistoryScreen
 import com.ticklog.ui.feature_home.HomeScreen
 import com.ticklog.ui.feature_onboarding.ChecklistBuilderScreen
 import com.ticklog.ui.feature_onboarding.OnboardingScreen
 import com.ticklog.ui.feature_pdf.PdfExportScreen
+import com.ticklog.ui.feature_settings.LicensesScreen
 import com.ticklog.ui.feature_settings.SettingsScreen
 import com.ticklog.ui.feature_statistics.StatisticsScreen
 
@@ -43,14 +46,16 @@ fun TickLogNavHost(
     windowSizeClass: WindowSizeClass,
     modifier: Modifier = Modifier,
 ) {
+    // Honour the user's "animations" preference: gentle fade, or an instant cut.
+    val duration = if (LocalAnimationsEnabled.current) FADE_DURATION_MS else 0
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier,
-        enterTransition = { fadeIn(animationSpec = tween(FADE_DURATION_MS)) },
-        exitTransition = { fadeOut(animationSpec = tween(FADE_DURATION_MS)) },
-        popEnterTransition = { fadeIn(animationSpec = tween(FADE_DURATION_MS)) },
-        popExitTransition = { fadeOut(animationSpec = tween(FADE_DURATION_MS)) },
+        enterTransition = { fadeIn(animationSpec = tween(duration)) },
+        exitTransition = { fadeOut(animationSpec = tween(duration)) },
+        popEnterTransition = { fadeIn(animationSpec = tween(duration)) },
+        popExitTransition = { fadeOut(animationSpec = tween(duration)) },
     ) {
         composable(route = TickDestination.Onboarding.route) {
             OnboardingScreen(
@@ -125,11 +130,28 @@ fun TickLogNavHost(
             SettingsScreen(
                 onNavigateUp = navController::navigateUp,
                 onNavigateToPdfExport = { navController.navigateTo(TickDestination.PdfExport) },
+                onNavigateToBackup = { navController.navigateTo(TickDestination.Backup) },
+                onNavigateToLicenses = { navController.navigateTo(TickDestination.Licenses) },
+                onOnboardingReset = {
+                    navController.navigate(TickDestination.Onboarding.route) {
+                        // Clear the entire back stack and return to first-run.
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
             )
         }
 
         composable(route = TickDestination.PdfExport.route) {
             PdfExportScreen(onNavigateUp = navController::navigateUp)
+        }
+
+        composable(route = TickDestination.Backup.route) {
+            BackupScreen(onNavigateUp = navController::navigateUp)
+        }
+
+        composable(route = TickDestination.Licenses.route) {
+            LicensesScreen(onNavigateUp = navController::navigateUp)
         }
     }
 }

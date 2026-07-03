@@ -1,7 +1,9 @@
 package com.ticklog.domain.repository
 
+import com.ticklog.domain.model.DateFormat
 import com.ticklog.domain.model.ThemeMode
 import com.ticklog.domain.model.UserPreferences
+import com.ticklog.domain.model.WeekStart
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
@@ -27,4 +29,19 @@ interface PreferencesRepository {
 
     /** Persists the user's [ThemeMode] choice. */
     suspend fun setThemeMode(themeMode: ThemeMode)
+
+    /** Persists the user's [DateFormat] choice. */
+    suspend fun setDateFormat(dateFormat: DateFormat)
+
+    /** Persists the user's [WeekStart] choice. */
+    suspend fun setWeekStart(weekStart: WeekStart)
+
+    /** Persists whether non-essential animations are enabled. */
+    suspend fun setAnimationsEnabled(enabled: Boolean)
+
+    /**
+     * Clears the onboarding flag so the first-run flow is shown again. The chosen
+     * date range and existing checklist data are left untouched.
+     */
+    suspend fun resetOnboarding()
 }

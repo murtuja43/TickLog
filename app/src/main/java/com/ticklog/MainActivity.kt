@@ -11,10 +11,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.ticklog.core.designsystem.LocalAnimationsEnabled
+import com.ticklog.core.designsystem.LocalDateFormat
+import com.ticklog.core.designsystem.LocalWeekStart
 import com.ticklog.core.designsystem.component.LoadingIndicator
 import com.ticklog.core.designsystem.theme.TickLogTheme
 import com.ticklog.core.navigation.TickDestination
@@ -64,11 +68,17 @@ class MainActivity : ComponentActivity() {
                                     TickDestination.Onboarding.route
                                 }
 
-                            TickLogNavHost(
-                                navController = navController,
-                                startDestination = startDestination,
-                                windowSizeClass = windowSizeClass,
-                            )
+                            CompositionLocalProvider(
+                                LocalAnimationsEnabled provides state.animationsEnabled,
+                                LocalWeekStart provides state.weekStart,
+                                LocalDateFormat provides state.dateFormat,
+                            ) {
+                                TickLogNavHost(
+                                    navController = navController,
+                                    startDestination = startDestination,
+                                    windowSizeClass = windowSizeClass,
+                                )
+                            }
                         }
                     }
                 }

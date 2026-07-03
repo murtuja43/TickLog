@@ -45,6 +45,7 @@ import com.ticklog.core.designsystem.component.EmptyState
 import com.ticklog.core.designsystem.component.LoadingIndicator
 import com.ticklog.core.designsystem.component.ProgressRing
 import com.ticklog.core.designsystem.component.ResponsiveContainer
+import com.ticklog.core.designsystem.LocalWeekStart
 import com.ticklog.core.designsystem.component.TickTopAppBar
 import com.ticklog.core.designsystem.theme.TickLogTheme
 import com.ticklog.domain.calculator.CalendarGenerator
@@ -192,11 +193,12 @@ private fun MonthHeader(
     }
 }
 
-/** A row of short weekday labels (Mon..Sun). */
+/** A row of short weekday labels, starting on the user's chosen first day. */
 @Composable
 private fun WeekdayHeader() {
+    val firstDay = LocalWeekStart.current.dayOfWeek
     Row(modifier = Modifier.fillMaxWidth().padding(horizontal = TickLogTheme.spacing.small)) {
-        CalendarGenerator.orderedWeekDays().forEach { dayOfWeek ->
+        CalendarGenerator.orderedWeekDays(firstDay).forEach { dayOfWeek ->
             Text(
                 text = dayOfWeek.getDisplayName(JavaTextStyle.SHORT, Locale.getDefault()),
                 style = MaterialTheme.typography.labelMedium,
@@ -216,7 +218,8 @@ private fun MonthGrid(
     today: LocalDate,
     onDaySelected: (LocalDate) -> Unit,
 ) {
-    val cells = remember(month) { CalendarGenerator.generate(month) }
+    val firstDay = LocalWeekStart.current.dayOfWeek
+    val cells = remember(month, firstDay) { CalendarGenerator.generate(month, firstDay) }
     Column(modifier = Modifier.fillMaxWidth().padding(TickLogTheme.spacing.small)) {
         cells.chunked(CalendarGenerator.DAYS_PER_WEEK).forEach { week ->
             Row(modifier = Modifier.fillMaxWidth()) {

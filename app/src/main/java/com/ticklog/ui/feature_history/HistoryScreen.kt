@@ -52,12 +52,13 @@ import com.ticklog.R
 import com.ticklog.core.designsystem.component.EmptyState
 import com.ticklog.core.designsystem.component.LoadingIndicator
 import com.ticklog.core.designsystem.component.ProgressRing
+import com.ticklog.core.designsystem.LocalDateFormat
 import com.ticklog.core.designsystem.component.TickCard
 import com.ticklog.core.designsystem.component.TickTopAppBar
+import com.ticklog.core.designsystem.formatDate
 import com.ticklog.core.designsystem.theme.TickLogTheme
 import com.ticklog.domain.model.CompletionRecord
 import com.ticklog.domain.model.DailyChecklist
-import com.ticklog.util.DateTimeFormatters
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -267,7 +268,7 @@ private fun HistoryDayCard(
                     .padding(start = TickLogTheme.spacing.medium),
             ) {
                 Text(
-                    text = DateTimeFormatters.medium(record.date),
+                    text = LocalDateFormat.current.formatDate(record.date),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                 )

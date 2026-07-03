@@ -1,6 +1,8 @@
 package com.ticklog
 
+import com.ticklog.domain.model.DateFormat
 import com.ticklog.domain.model.ThemeMode
+import com.ticklog.domain.model.WeekStart
 
 /**
  * Top-level UI state that decides what the very first frame shows.
@@ -19,9 +21,15 @@ sealed interface MainUiState {
      *
      * @property themeMode the user's theme choice.
      * @property onboardingCompleted whether to start at Home (vs. Onboarding).
+     * @property animationsEnabled whether non-essential motion is on.
+     * @property weekStart the weekday calendars start on.
+     * @property dateFormat how dates are formatted.
      */
     data class Ready(
         val themeMode: ThemeMode,
         val onboardingCompleted: Boolean,
+        val animationsEnabled: Boolean,
+        val weekStart: WeekStart,
+        val dateFormat: DateFormat,
     ) : MainUiState
 }

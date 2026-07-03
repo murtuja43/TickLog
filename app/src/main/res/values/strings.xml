@@ -76,8 +76,6 @@
     <string name="history_empty_subtitle">Complete some tasks and your days will appear here.</string>
     <string name="statistics_empty_title">No statistics available</string>
     <string name="statistics_empty_subtitle">Complete some tasks to begin tracking your progress.</string>
-    <string name="pdf_empty_title">PDF export coming soon</string>
-    <string name="pdf_empty_subtitle">Export your full history to a shareable document.</string>
 
     <!-- Calendar -->
     <string name="calendar_previous_month">Previous month</string>
@@ -135,6 +133,62 @@
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_about">About</string>
     <string name="settings_version">Version</string>
+
+    <!-- Top-level navigation (Phase 4) -->
+    <string name="destination_backup">Backup &amp; Restore</string>
+
+    <!-- PDF export -->
+    <string name="pdf_scope_title">What to export</string>
+    <string name="pdf_scope_single_day">Single day</string>
+    <string name="pdf_scope_range">Date range</string>
+    <string name="pdf_scope_month">Month</string>
+    <string name="pdf_scope_year">Year</string>
+    <string name="pdf_scope_all">Entire history</string>
+    <string name="pdf_date">Date</string>
+    <string name="pdf_month">Month</string>
+    <string name="pdf_year">Year</string>
+    <string name="pdf_decrement">Previous</string>
+    <string name="pdf_increment">Next</string>
+    <string name="pdf_save">Save PDF</string>
+    <string name="pdf_share">Share PDF</string>
+    <string name="pdf_open">Open PDF</string>
+    <string name="pdf_saved">Report saved</string>
+    <string name="pdf_failed">Could not create the report</string>
+    <string name="pdf_no_viewer">No app can open PDF files</string>
+
+    <!-- Backup &amp; Restore -->
+    <string name="backup_export_title">Export backup</string>
+    <string name="backup_export_description">Save all your checklists, history and settings to a file you can keep safe.</string>
+    <string name="backup_export_action">Export backup</string>
+    <string name="backup_restore_title">Restore backup</string>
+    <string name="backup_restore_description">Replace everything on this device with the contents of a backup file.</string>
+    <string name="backup_restore_action">Restore</string>
+    <string name="backup_restore_confirm_title">Restore backup?</string>
+    <string name="backup_restore_confirm_message">This replaces all current checklists, history and settings. This cannot be undone.</string>
+    <string name="backup_export_success">Backup saved</string>
+    <string name="backup_export_failed">Could not create the backup</string>
+    <string name="backup_restore_success">Backup restored</string>
+    <string name="backup_error_invalid">That file isn\'t a valid TickLog backup</string>
+    <string name="backup_error_version">This backup was made by a newer version of TickLog</string>
+    <string name="backup_error_checksum">The backup is corrupt and can\'t be restored</string>
+    <string name="backup_error_restore">Something went wrong while restoring</string>
+
+    <!-- Settings (Phase 4) -->
+    <string name="settings_theme">Theme</string>
+    <string name="settings_date_format">Date format</string>
+    <string name="settings_date_format_system">System default</string>
+    <string name="settings_week_start">Week starts on</string>
+    <string name="settings_week_sunday">Sunday</string>
+    <string name="settings_week_monday">Monday</string>
+    <string name="settings_animations">Animations</string>
+    <string name="settings_animations_description">Play subtle motion across the app</string>
+    <string name="settings_data">Data</string>
+    <string name="settings_general">General</string>
+    <string name="settings_reset_onboarding">Reset onboarding</string>
+    <string name="settings_reset_onboarding_message">Show the first-run setup again. Your existing checklists and history are kept.</string>
+    <string name="settings_licenses">Open-source licences</string>
+    <string name="settings_privacy">Privacy</string>
+    <string name="settings_privacy_message">TickLog is fully offline. Your data never leaves your device — there is no account, no network access and no tracking. Backups and PDF exports are created only when you ask, and saved only where you choose.</string>
 
     <!-- Content descriptions -->
     <string name="cd_app_logo">TickLog logo</string>

@@ -61,4 +61,8 @@ interface ChecklistItemDao {
     /** Archives an item (soft delete) so history that references it is preserved. */
     @Query("UPDATE checklist_items SET is_archived = 1 WHERE id = :itemId")
     suspend fun archive(itemId: Long)
+
+    /** All template items — used to serialise a full backup. */
+    @Query("SELECT * FROM checklist_items")
+    suspend fun getAll(): List<ChecklistItemEntity>
 }

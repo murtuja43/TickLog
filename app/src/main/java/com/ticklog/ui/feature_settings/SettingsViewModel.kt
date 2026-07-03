@@ -3,9 +3,11 @@ package com.ticklog.ui.feature_settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ticklog.BuildConfig
+import com.ticklog.domain.model.DateFormat
 import com.ticklog.domain.model.ThemeMode
+import com.ticklog.domain.model.WeekStart
+import com.ticklog.domain.repository.PreferencesRepository
 import com.ticklog.domain.usecase.ObserveUserPreferencesUseCase
-import com.ticklog.domain.usecase.SetThemeModeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -17,22 +19,24 @@ import javax.inject.Inject
 /**
  * Drives the Settings screen.
  *
- * It maps the user-preferences stream into [SettingsUiState] and exposes a
- * single intent — selecting a theme. All threading and persistence is delegated
- * to the injected use cases, keeping this class focused on state orchestration.
+ * Maps the user-preferences stream into [SettingsUiState] and forwards every
+ * change to the [PreferencesRepository]. Persistence is fire-and-forget; the UI
+ * updates reactively from the preferences flow, so there is no local echo state.
  */
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     observeUserPreferences: ObserveUserPreferencesUseCase,
-    private val setThemeMode: SetThemeModeUseCase,
+    private val preferencesRepository: PreferencesRepository,
 ) : ViewModel() {
 
-    /** Reactive UI state, started while the screen is subscribed. */
     val uiState: StateFlow<SettingsUiState> =
         observeUserPreferences()
             .map { prefs ->
                 SettingsUiState(
                     themeMode = prefs.themeMode,
+                    dateFormat = prefs.dateFormat,
+                    weekStart = prefs.weekStart,
+                    animationsEnabled = prefs.animationsEnabled,
                     appVersion = BuildConfig.VERSION_NAME,
                 )
             }
@@ -42,9 +46,23 @@ class SettingsViewModel @Inject constructor(
                 initialValue = SettingsUiState(appVersion = BuildConfig.VERSION_NAME),
             )
 
-    /** Persists the user's [themeMode] selection. */
-    fun onThemeModeSelected(themeMode: ThemeMode) {
-        viewModelScope.launch { setThemeMode(themeMode) }
+    fun onThemeModeSelected(themeMode: ThemeMode) =
+        launchPref { preferencesRepository.setThemeMode(themeMode) }
+
+    fun onDateFormatSelected(dateFormat: DateFormat) =
+        launchPref { preferencesRepository.setDateFormat(dateFormat) }
+
+    fun onWeekStartSelected(weekStart: WeekStart) =
+        launchPref { preferencesRepository.setWeekStart(weekStart) }
+
+    fun onAnimationsToggled(enabled: Boolean) =
+        launchPref { preferencesRepository.setAnimationsEnabled(enabled) }
+
+    fun onResetOnboarding() =
+        launchPref { preferencesRepository.resetOnboarding() }
+
+    private fun launchPref(block: suspend () -> Unit) {
+        viewModelScope.launch { block() }
     }
 
     private companion object {

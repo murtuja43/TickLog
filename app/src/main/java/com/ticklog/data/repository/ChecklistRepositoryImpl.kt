@@ -91,6 +91,16 @@ class ChecklistRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getChecklistsInRange(
+        start: LocalDate,
+        end: LocalDate,
+    ): List<DailyChecklist> {
+        val template = templateDao.observeActiveTemplate().first() ?: return emptyList()
+        return dailyChecklistDao
+            .getChecklistsWithItemsInRange(template.id, start, end)
+            .map { it.toDomain() }
+    }
+
     /**
      * Follows the active template and switches to [block] for its id, emitting an
      * empty list while no template exists. Shared by the read aggregates above.

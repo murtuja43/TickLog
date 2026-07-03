@@ -41,4 +41,12 @@ interface ChecklistTemplateDao {
     /** Deletes a template by id; cascades to its items and daily checklists. */
     @Query("DELETE FROM checklist_templates WHERE id = :templateId")
     suspend fun deleteById(templateId: Long)
+
+    /** All templates — used to serialise a full backup. */
+    @Query("SELECT * FROM checklist_templates")
+    suspend fun getAll(): List<ChecklistTemplateEntity>
+
+    /** Bulk insert preserving ids — used to restore a full backup. */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(templates: List<ChecklistTemplateEntity>)
 }

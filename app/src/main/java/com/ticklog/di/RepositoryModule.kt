@@ -1,8 +1,10 @@
 package com.ticklog.di
 
+import com.ticklog.data.repository.BackupRepositoryImpl
 import com.ticklog.data.repository.ChecklistRepositoryImpl
 import com.ticklog.data.repository.PreferencesRepositoryImpl
 import com.ticklog.data.repository.SettingsRepositoryImpl
+import com.ticklog.domain.repository.BackupRepository
 import com.ticklog.domain.repository.ChecklistRepository
 import com.ticklog.domain.repository.PreferencesRepository
 import com.ticklog.domain.repository.SettingsRepository
@@ -41,4 +43,10 @@ abstract class RepositoryModule {
     abstract fun bindChecklistRepository(
         impl: ChecklistRepositoryImpl,
     ): ChecklistRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindBackupRepository(
+        impl: BackupRepositoryImpl,
+    ): BackupRepository
 }

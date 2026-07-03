@@ -29,4 +29,12 @@ interface SettingsDao {
     /** One-shot fetch of the settings row. */
     @Query("SELECT * FROM settings WHERE id = :id LIMIT 1")
     suspend fun getSettings(id: Int = SettingsEntity.SINGLETON_ID): SettingsEntity?
+
+    /** All settings rows — used to serialise a full backup. */
+    @Query("SELECT * FROM settings")
+    suspend fun getAll(): List<SettingsEntity>
+
+    /** Bulk insert preserving ids — used to restore a full backup. */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(settings: List<SettingsEntity>)
 }

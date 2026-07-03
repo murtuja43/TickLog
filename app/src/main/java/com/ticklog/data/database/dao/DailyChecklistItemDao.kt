@@ -109,4 +109,8 @@ interface DailyChecklistItemDao {
             "(SELECT id FROM daily_checklists WHERE date >= :fromDate)",
     )
     suspend fun deleteBySourceFromDate(sourceItemId: Long, fromDate: LocalDate)
+
+    /** All task rows — used to serialise a full backup. */
+    @Query("SELECT * FROM daily_checklist_items")
+    suspend fun getAll(): List<DailyChecklistItemEntity>
 }

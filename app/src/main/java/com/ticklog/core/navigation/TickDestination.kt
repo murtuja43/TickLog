@@ -63,6 +63,12 @@ sealed class TickDestination(val route: String) {
     /** App settings, including theme. */
     data object Settings : TickDestination("settings")
 
-    /** Export history to a shareable PDF (Phase 2). */
+    /** Export history to a shareable PDF. */
     data object PdfExport : TickDestination("pdf_export")
+
+    /** Offline backup and restore. */
+    data object Backup : TickDestination("backup")
+
+    /** Open-source licences. */
+    data object Licenses : TickDestination("licenses")
 }

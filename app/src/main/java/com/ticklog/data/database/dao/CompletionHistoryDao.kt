@@ -38,4 +38,12 @@ interface CompletionHistoryDao {
             "WHERE total_items > 0 AND completed_items >= total_items",
     )
     fun observePerfectDayCount(): Flow<Int>
+
+    /** All ledger rows — used to serialise a full backup. */
+    @Query("SELECT * FROM completion_history")
+    suspend fun getAll(): List<CompletionHistoryEntity>
+
+    /** Bulk insert preserving ids — used to restore a full backup. */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(records: List<CompletionHistoryEntity>)
 }

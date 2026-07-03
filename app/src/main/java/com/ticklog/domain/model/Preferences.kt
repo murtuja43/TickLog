@@ -1,5 +1,6 @@
 package com.ticklog.domain.model
 
+import java.time.DayOfWeek
 import java.time.LocalDate
 
 /**
@@ -16,6 +17,33 @@ enum class ThemeMode {
 }
 
 /**
+ * How calendar dates are formatted across the app and in exports.
+ *
+ * [SYSTEM] uses the device's localized medium format; the others pin an explicit
+ * pattern. Modelling this as an enum (with its [pattern]) keeps formatting
+ * consistent everywhere from a single user choice.
+ */
+enum class DateFormat(val pattern: String?) {
+    /** Device-localized medium date. */
+    SYSTEM(null),
+
+    /** e.g. "27 Jun 2026". */
+    DAY_MONTH_YEAR("d MMM yyyy"),
+
+    /** e.g. "Jun 27, 2026". */
+    MONTH_DAY_YEAR("MMM d, yyyy"),
+
+    /** e.g. "2026-06-27". */
+    ISO("yyyy-MM-dd"),
+}
+
+/** The weekday a calendar week starts on. */
+enum class WeekStart(val dayOfWeek: DayOfWeek) {
+    SUNDAY(DayOfWeek.SUNDAY),
+    MONDAY(DayOfWeek.MONDAY),
+}
+
+/**
  * Lightweight, UI-facing user preferences backed by DataStore.
  *
  * These are the few flags read on the app's hot path — the chosen theme, whether
@@ -24,12 +52,18 @@ enum class ThemeMode {
  *
  * @property onboardingCompleted whether the user has finished onboarding.
  * @property themeMode the user's theme choice.
+ * @property dateFormat how dates are displayed and exported.
+ * @property weekStart the weekday calendars begin on.
+ * @property animationsEnabled whether non-essential motion is enabled.
  * @property scheduleStartDate first date of the tracking range, if chosen.
  * @property scheduleEndDate last date of the tracking range, if chosen.
  */
 data class UserPreferences(
     val onboardingCompleted: Boolean,
     val themeMode: ThemeMode,
+    val dateFormat: DateFormat,
+    val weekStart: WeekStart,
+    val animationsEnabled: Boolean,
     val scheduleStartDate: LocalDate?,
     val scheduleEndDate: LocalDate?,
 ) {
@@ -38,6 +72,9 @@ data class UserPreferences(
         val DEFAULT = UserPreferences(
             onboardingCompleted = false,
             themeMode = ThemeMode.SYSTEM,
+            dateFormat = DateFormat.SYSTEM,
+            weekStart = WeekStart.MONDAY,
+            animationsEnabled = true,
             scheduleStartDate = null,
             scheduleEndDate = null,
         )

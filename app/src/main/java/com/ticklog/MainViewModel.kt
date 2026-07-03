@@ -29,6 +29,9 @@ class MainViewModel @Inject constructor(
                 MainUiState.Ready(
                     themeMode = prefs.themeMode,
                     onboardingCompleted = prefs.onboardingCompleted,
+                    animationsEnabled = prefs.animationsEnabled,
+                    weekStart = prefs.weekStart,
+                    dateFormat = prefs.dateFormat,
                 )
             }
             .stateIn(

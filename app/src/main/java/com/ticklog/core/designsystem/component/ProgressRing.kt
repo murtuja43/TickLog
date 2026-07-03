@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.ticklog.core.designsystem.LocalAnimationsEnabled
 
 /**
  * A monochrome circular progress indicator drawn with Compose Canvas.
@@ -44,7 +45,9 @@ fun ProgressRing(
     content: @Composable BoxScope.() -> Unit = {},
 ) {
     val target = progress.coerceIn(0f, 1f)
-    val animated by animateFloatAsState(targetValue = target, label = "progressRing")
+    val animatedValue by animateFloatAsState(targetValue = target, label = "progressRing")
+    // Respect the user's animations preference: snap instead of animating.
+    val animated = if (LocalAnimationsEnabled.current) animatedValue else target
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         Canvas(modifier = Modifier.matchParentSize()) {

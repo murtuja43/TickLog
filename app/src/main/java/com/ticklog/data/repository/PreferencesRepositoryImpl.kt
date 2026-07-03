@@ -1,8 +1,10 @@
 package com.ticklog.data.repository
 
 import com.ticklog.data.datastore.UserPreferencesDataSource
+import com.ticklog.domain.model.DateFormat
 import com.ticklog.domain.model.ThemeMode
 import com.ticklog.domain.model.UserPreferences
+import com.ticklog.domain.model.WeekStart
 import com.ticklog.domain.repository.PreferencesRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -30,5 +32,21 @@ class PreferencesRepositoryImpl @Inject constructor(
 
     override suspend fun setThemeMode(themeMode: ThemeMode) {
         dataSource.setThemeMode(themeMode)
+    }
+
+    override suspend fun setDateFormat(dateFormat: DateFormat) {
+        dataSource.setDateFormat(dateFormat)
+    }
+
+    override suspend fun setWeekStart(weekStart: WeekStart) {
+        dataSource.setWeekStart(weekStart)
+    }
+
+    override suspend fun setAnimationsEnabled(enabled: Boolean) {
+        dataSource.setAnimationsEnabled(enabled)
+    }
+
+    override suspend fun resetOnboarding() {
+        dataSource.clearOnboardingFlag()
     }
 }
