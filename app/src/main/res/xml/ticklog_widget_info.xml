@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    TickLog home-screen widget metadata.
+
+    * A 2x2 default (minWidth/minHeight) that resizes freely in both axes; the
+      Glance content adapts across 2x2 / 4x2 / 4x4 via SizeMode.Responsive.
+    * updatePeriodMillis = 0: the widget is never polled on a timer. It is driven
+      only by real events (in-app changes, task toggles, and day rollover), which
+      is both fresher and far kinder to the battery.
+    * initialLayout is Glance's standard loading view, shown for the instant
+      before the first composition is generated.
+    * targetCell* and maxResize* are progressive enhancements the launcher only
+      reads on API 31+; below that they are harmlessly ignored, so lint's
+      UnusedAttribute notice (minSdk is 28) is a deliberate, documented exception.
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:minWidth="140dp"
+    android:minHeight="110dp"
+    android:targetCellWidth="2"
+    android:targetCellHeight="2"
+    android:minResizeWidth="140dp"
+    android:minResizeHeight="110dp"
+    android:maxResizeWidth="320dp"
+    android:maxResizeHeight="340dp"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen"
+    android:description="@string/widget_description"
+    android:previewImage="@mipmap/ic_launcher"
+    android:initialLayout="@layout/glance_default_loading_layout"
+    android:updatePeriodMillis="0"
+    tools:ignore="UnusedAttribute" />

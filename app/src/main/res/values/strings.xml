@@ -198,4 +198,18 @@
     <string name="cd_state_completed">Completed</string>
     <string name="cd_state_incomplete">Not completed</string>
 
+    <!-- Home-screen widget -->
+    <string name="widget_description">Today\'s checklist, completion and streak at a glance.</string>
+    <string name="widget_today">Today</string>
+    <string name="widget_no_tasks">No tasks for today.</string>
+    <string name="widget_empty_title">TickLog</string>
+    <string name="widget_empty_subtitle">Tap to set up your checklist.</string>
+    <string name="widget_no_streak">No streak yet</string>
+    <plurals name="widget_streak">
+        <item quantity="one">%1$d-day streak</item>
+        <item quantity="other">%1$d-day streak</item>
+    </plurals>
+    <string name="widget_task_completed_cd">Completed: %1$s. Tap to mark not done.</string>
+    <string name="widget_task_incomplete_cd">Not completed: %1$s. Tap to mark done.</string>
+
 </resources>

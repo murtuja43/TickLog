@@ -28,13 +28,34 @@
             android:name=".MainActivity"
             android:exported="true"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|uiMode"
-            android:theme="@style/Theme.TickLog"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.TickLog.Splash"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--
+            Home-screen widget. Listens for the standard app-widget update, plus
+            the system day-rollover broadcasts so "today" refreshes at midnight
+            (and on manual clock/timezone changes) without any polling.
+        -->
+        <receiver
+            android:name=".ui.feature_widget.TickLogWidgetReceiver"
+            android:exported="false"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ticklog_widget_info" />
+        </receiver>
 
         <!--
             Grants other apps temporary, scoped read access to generated PDF

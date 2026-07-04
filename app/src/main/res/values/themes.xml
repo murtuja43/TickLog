@@ -11,4 +11,16 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
+
+    <!--
+        Launch (splash) theme: a minimal, centred TickLog mark on a white field,
+        handed off to Theme.TickLog the moment the first Compose frame is ready.
+        Backed by androidx.core:core-splashscreen so it behaves identically from
+        API 28 up through the platform splash on API 31+.
+    -->
+    <style name="Theme.TickLog.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.TickLog</item>
+    </style>
 </resources>

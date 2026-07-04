@@ -119,6 +119,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.process)
     implementation(libs.androidx.activity.compose)
 
     // --- Compose (versions governed by the BOM) ------------------------------
@@ -132,6 +133,13 @@ dependencies {
 
     // --- Navigation ----------------------------------------------------------
     implementation(libs.androidx.navigation.compose)
+
+    // --- Splash screen -------------------------------------------------------
+    implementation(libs.androidx.core.splashscreen)
+
+    // --- Glance (home-screen widget) -----------------------------------------
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material3)
 
     // --- Dependency Injection ------------------------------------------------
     implementation(libs.hilt.android)
