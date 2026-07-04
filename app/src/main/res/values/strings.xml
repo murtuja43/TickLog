@@ -183,6 +183,8 @@
     <string name="settings_animations">Animations</string>
     <string name="settings_animations_description">Play subtle motion across the app</string>
     <string name="settings_data">Data</string>
+    <string name="settings_export_notes">Include notes in exports</string>
+    <string name="settings_export_notes_description">Add task notes to PDF reports</string>
     <string name="settings_general">General</string>
     <string name="settings_reset_onboarding">Reset onboarding</string>
     <string name="settings_reset_onboarding_message">Show the first-run setup again. Your existing checklists and history are kept.</string>

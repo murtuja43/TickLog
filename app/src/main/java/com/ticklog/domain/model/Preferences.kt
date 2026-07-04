@@ -55,6 +55,7 @@ enum class WeekStart(val dayOfWeek: DayOfWeek) {
  * @property dateFormat how dates are displayed and exported.
  * @property weekStart the weekday calendars begin on.
  * @property animationsEnabled whether non-essential motion is enabled.
+ * @property includeNotesInExport whether PDF exports include task notes.
  * @property scheduleStartDate first date of the tracking range, if chosen.
  * @property scheduleEndDate last date of the tracking range, if chosen.
  */
@@ -64,6 +65,7 @@ data class UserPreferences(
     val dateFormat: DateFormat,
     val weekStart: WeekStart,
     val animationsEnabled: Boolean,
+    val includeNotesInExport: Boolean,
     val scheduleStartDate: LocalDate?,
     val scheduleEndDate: LocalDate?,
 ) {
@@ -75,6 +77,7 @@ data class UserPreferences(
             dateFormat = DateFormat.SYSTEM,
             weekStart = WeekStart.MONDAY,
             animationsEnabled = true,
+            includeNotesInExport = true,
             scheduleStartDate = null,
             scheduleEndDate = null,
         )

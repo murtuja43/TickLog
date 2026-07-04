@@ -1,6 +1,8 @@
 package com.ticklog.core.designsystem.component
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -23,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.ticklog.R
+import com.ticklog.core.designsystem.LocalAnimationsEnabled
 
 /**
  * A large, animated date header with optional previous / next navigation.
@@ -60,11 +63,16 @@ fun DateHeader(
             }
         }
 
+        val animate = LocalAnimationsEnabled.current
         AnimatedContent(
             targetState = primaryText to secondaryText,
             transitionSpec = {
-                (slideInVertically { height -> height / 2 } + fadeIn())
-                    .togetherWith(slideOutVertically { height -> -height / 2 } + fadeOut())
+                if (animate) {
+                    (slideInVertically { height -> height / 2 } + fadeIn())
+                        .togetherWith(slideOutVertically { height -> -height / 2 } + fadeOut())
+                } else {
+                    EnterTransition.None togetherWith ExitTransition.None
+                }
             },
             label = "dateHeaderContent",
         ) { (primary, secondary) ->

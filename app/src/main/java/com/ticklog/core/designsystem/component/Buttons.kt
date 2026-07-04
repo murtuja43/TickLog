@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.ticklog.core.designsystem.LocalAnimationsEnabled
 
 /**
  * Reusable button components.
@@ -122,8 +123,7 @@ private fun ButtonContent(text: String, leadingIcon: ImageVector?) {
 @Composable
 private fun pressScale(interactionSource: MutableInteractionSource): State<Float> {
     val pressed by interactionSource.collectIsPressedAsState()
-    return animateFloatAsState(
-        targetValue = if (pressed) 0.96f else 1f,
-        label = "buttonPressScale",
-    )
+    // Skip the squish when the user has turned animations off.
+    val target = if (pressed && LocalAnimationsEnabled.current) 0.96f else 1f
+    return animateFloatAsState(targetValue = target, label = "buttonPressScale")
 }

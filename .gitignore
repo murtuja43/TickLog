@@ -37,3 +37,6 @@ captures/
 *.log
 *.tmp
 *.swp
+
+# Kotlin build daemon session files
+.kotlin/

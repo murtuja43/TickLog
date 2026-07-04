@@ -70,6 +70,11 @@ class UserPreferencesDataSource @Inject constructor(
         dataStore.edit { prefs -> prefs[Keys.ANIMATIONS_ENABLED] = enabled }
     }
 
+    /** Persists whether PDF exports include task notes. */
+    suspend fun setIncludeNotesInExport(enabled: Boolean) {
+        dataStore.edit { prefs -> prefs[Keys.INCLUDE_NOTES_IN_EXPORT] = enabled }
+    }
+
     /** Overwrites every stored preference from [preferences] (used by restore). */
     suspend fun replaceAll(preferences: UserPreferences) {
         dataStore.edit { prefs ->
@@ -78,6 +83,7 @@ class UserPreferencesDataSource @Inject constructor(
             prefs[Keys.DATE_FORMAT] = preferences.dateFormat.name
             prefs[Keys.WEEK_START] = preferences.weekStart.name
             prefs[Keys.ANIMATIONS_ENABLED] = preferences.animationsEnabled
+            prefs[Keys.INCLUDE_NOTES_IN_EXPORT] = preferences.includeNotesInExport
             preferences.scheduleStartDate?.let { prefs[Keys.SCHEDULE_START_EPOCH_DAY] = it.toEpochDay() }
             preferences.scheduleEndDate?.let { prefs[Keys.SCHEDULE_END_EPOCH_DAY] = it.toEpochDay() }
         }
@@ -90,6 +96,7 @@ class UserPreferencesDataSource @Inject constructor(
         dateFormat = decodeEnum(this[Keys.DATE_FORMAT], DateFormat.entries, DateFormat.SYSTEM),
         weekStart = decodeEnum(this[Keys.WEEK_START], WeekStart.entries, WeekStart.MONDAY),
         animationsEnabled = this[Keys.ANIMATIONS_ENABLED] ?: true,
+        includeNotesInExport = this[Keys.INCLUDE_NOTES_IN_EXPORT] ?: true,
         scheduleStartDate = this[Keys.SCHEDULE_START_EPOCH_DAY]?.let(LocalDate::ofEpochDay),
         scheduleEndDate = this[Keys.SCHEDULE_END_EPOCH_DAY]?.let(LocalDate::ofEpochDay),
     )
@@ -105,6 +112,7 @@ class UserPreferencesDataSource @Inject constructor(
         val DATE_FORMAT = stringPreferencesKey("date_format")
         val WEEK_START = stringPreferencesKey("week_start")
         val ANIMATIONS_ENABLED = booleanPreferencesKey("animations_enabled")
+        val INCLUDE_NOTES_IN_EXPORT = booleanPreferencesKey("include_notes_in_export")
         val SCHEDULE_START_EPOCH_DAY = longPreferencesKey("schedule_start_epoch_day")
         val SCHEDULE_END_EPOCH_DAY = longPreferencesKey("schedule_end_epoch_day")
     }

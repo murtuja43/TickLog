@@ -29,12 +29,18 @@ import kotlin.math.roundToInt
 class PdfReportRenderer @Inject constructor() {
 
     /**
-     * Renders [data] to [output] using [dateFormat] for dates. The stream is not
-     * closed here (the caller owns it).
+     * Renders [data] to [output] using [dateFormat] for dates. When [includeNotes]
+     * is false, task notes are omitted. The stream is not closed here (the caller
+     * owns it).
      */
-    fun render(data: ReportData, dateFormat: DateFormat, output: OutputStream) {
+    fun render(
+        data: ReportData,
+        dateFormat: DateFormat,
+        includeNotes: Boolean,
+        output: OutputStream,
+    ) {
         val document = PdfDocument()
-        Session(document, data, dateFormat).run()
+        Session(document, data, dateFormat, includeNotes).run()
         document.writeTo(output)
         document.close()
     }
@@ -44,6 +50,7 @@ class PdfReportRenderer @Inject constructor() {
         private val document: PdfDocument,
         private val data: ReportData,
         dateFormat: DateFormat,
+        private val includeNotes: Boolean,
     ) {
         private val dateFormatter: DateTimeFormatter =
             dateFormat.pattern?.let(DateTimeFormatter::ofPattern)
@@ -146,8 +153,8 @@ class PdfReportRenderer @Inject constructor() {
             val stats: ChecklistStatistics = data.statistics
             keyValue("Overall completion", percent(stats.overallCompletionRate))
             keyValue("Average completion", percent(stats.averageDailyCompletion))
-            keyValue("Current streak", "${stats.currentStreak} days")
-            keyValue("Longest streak", "${stats.longestStreak} days")
+            keyValue("Current streak", days(stats.currentStreak))
+            keyValue("Longest streak", days(stats.longestStreak))
             keyValue("Tasks completed", stats.totalCompletedTasks.toString())
             keyValue("Tasks skipped", stats.totalIncompleteTasks.toString())
             keyValue("Checklist days", stats.totalChecklistDays.toString())
@@ -180,7 +187,7 @@ class PdfReportRenderer @Inject constructor() {
         private fun drawTask(task: com.ticklog.domain.model.DailyTask) {
             drawLines("•  ${task.title}", body, CONTENT_LEFT + BULLET_INDENT, CONTENT_WIDTH - BULLET_INDENT)
             val taskNote = task.note
-            if (!taskNote.isNullOrBlank()) {
+            if (includeNotes && !taskNote.isNullOrBlank()) {
                 drawLines(taskNote, note, CONTENT_LEFT + NOTE_INDENT, CONTENT_WIDTH - NOTE_INDENT)
             }
         }
@@ -224,6 +231,8 @@ class PdfReportRenderer @Inject constructor() {
         }
 
         private fun percent(rate: Float): String = "${(rate * 100).roundToInt()}%"
+
+        private fun days(count: Int): String = if (count == 1) "1 day" else "$count days"
 
         /** Greedy word-wrap to [maxWidth], hard-breaking words that are too long. */
         private fun wrap(text: String, paint: Paint, maxWidth: Float): List<String> {

@@ -135,7 +135,7 @@ fun TickLogNavHost(
                 onOnboardingReset = {
                     navController.navigate(TickDestination.Onboarding.route) {
                         // Clear the entire back stack and return to first-run.
-                        popUpTo(0) { inclusive = true }
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
                         launchSingleTop = true
                     }
                 },

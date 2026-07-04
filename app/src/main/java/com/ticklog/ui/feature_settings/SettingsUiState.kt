@@ -14,6 +14,7 @@ import com.ticklog.domain.model.WeekStart
  * @property dateFormat selected date format.
  * @property weekStart selected first weekday.
  * @property animationsEnabled whether non-essential motion is enabled.
+ * @property includeNotesInExport whether PDF exports include task notes.
  * @property appVersion human-readable version string for the About section.
  */
 @Immutable
@@ -22,5 +23,6 @@ data class SettingsUiState(
     val dateFormat: DateFormat = DateFormat.SYSTEM,
     val weekStart: WeekStart = WeekStart.MONDAY,
     val animationsEnabled: Boolean = true,
+    val includeNotesInExport: Boolean = true,
     val appVersion: String = "",
 )

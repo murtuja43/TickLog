@@ -32,20 +32,22 @@ class PdfExporter @Inject constructor(
     /** Renders the report for [scope] into a fresh cache file and returns it. */
     suspend fun renderToCache(scope: ReportScope): File = withContext(ioDispatcher) {
         val data = buildReportData(scope)
-        val dateFormat = preferencesRepository.preferences.first().dateFormat
+        val prefs = preferencesRepository.preferences.first()
         val dir = File(context.cacheDir, EXPORTS_DIR).apply { mkdirs() }
         val file = File(dir, "TickLog_${System.currentTimeMillis()}.pdf")
-        file.outputStream().use { renderer.render(data, dateFormat, it) }
+        file.outputStream().use {
+            renderer.render(data, prefs.dateFormat, prefs.includeNotesInExport, it)
+        }
         file
     }
 
     /** Renders the report for [scope] into the SAF [destination]. */
     suspend fun renderToUri(scope: ReportScope, destination: Uri) = withContext(ioDispatcher) {
         val data = buildReportData(scope)
-        val dateFormat = preferencesRepository.preferences.first().dateFormat
+        val prefs = preferencesRepository.preferences.first()
         val stream = context.contentResolver.openOutputStream(destination)
             ?: error("Unable to open destination for writing")
-        stream.use { renderer.render(data, dateFormat, it) }
+        stream.use { renderer.render(data, prefs.dateFormat, prefs.includeNotesInExport, it) }
     }
 
     /** A scoped, shareable content URI for a cache [file]. */

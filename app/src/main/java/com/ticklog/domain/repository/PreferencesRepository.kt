@@ -39,6 +39,9 @@ interface PreferencesRepository {
     /** Persists whether non-essential animations are enabled. */
     suspend fun setAnimationsEnabled(enabled: Boolean)
 
+    /** Persists whether PDF exports include task notes. */
+    suspend fun setIncludeNotesInExport(enabled: Boolean)
+
     /**
      * Clears the onboarding flag so the first-run flow is shown again. The chosen
      * date range and existing checklist data are left untouched.

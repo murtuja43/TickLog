@@ -79,6 +79,7 @@ fun SettingsScreen(
         onDateFormatSelected = viewModel::onDateFormatSelected,
         onWeekStartSelected = viewModel::onWeekStartSelected,
         onAnimationsToggled = viewModel::onAnimationsToggled,
+        onIncludeNotesToggled = viewModel::onIncludeNotesToggled,
         onResetOnboarding = {
             viewModel.onResetOnboarding()
             onOnboardingReset()
@@ -107,6 +108,7 @@ private fun SettingsContent(
     onDateFormatSelected: (DateFormat) -> Unit,
     onWeekStartSelected: (WeekStart) -> Unit,
     onAnimationsToggled: (Boolean) -> Unit,
+    onIncludeNotesToggled: (Boolean) -> Unit,
     onResetOnboarding: () -> Unit,
     onNavigateUp: () -> Unit,
     onNavigateToPdfExport: () -> Unit,
@@ -145,6 +147,8 @@ private fun SettingsContent(
                     onAnimationsToggled = onAnimationsToggled,
                 )
                 DataSection(
+                    includeNotesInExport = uiState.includeNotesInExport,
+                    onIncludeNotesToggled = onIncludeNotesToggled,
                     onNavigateToPdfExport = onNavigateToPdfExport,
                     onNavigateToBackup = onNavigateToBackup,
                 )
@@ -243,7 +247,12 @@ private fun AppearanceSection(
 }
 
 @Composable
-private fun DataSection(onNavigateToPdfExport: () -> Unit, onNavigateToBackup: () -> Unit) {
+private fun DataSection(
+    includeNotesInExport: Boolean,
+    onIncludeNotesToggled: (Boolean) -> Unit,
+    onNavigateToPdfExport: () -> Unit,
+    onNavigateToBackup: () -> Unit,
+) {
     SettingsGroup(title = stringResource(R.string.settings_data)) {
         NavigationRow(
             icon = { Icon(Icons.Outlined.PictureAsPdf, contentDescription = null) },
@@ -256,6 +265,14 @@ private fun DataSection(onNavigateToPdfExport: () -> Unit, onNavigateToBackup: (
             title = stringResource(R.string.destination_backup),
             value = null,
             onClick = onNavigateToBackup,
+        )
+        ListItem(
+            headlineContent = { Text(stringResource(R.string.settings_export_notes)) },
+            supportingContent = { Text(stringResource(R.string.settings_export_notes_description)) },
+            trailingContent = {
+                Switch(checked = includeNotesInExport, onCheckedChange = onIncludeNotesToggled)
+            },
+            colors = surfaceListColors(),
         )
     }
 }

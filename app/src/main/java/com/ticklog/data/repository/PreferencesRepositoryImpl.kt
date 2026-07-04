@@ -46,6 +46,10 @@ class PreferencesRepositoryImpl @Inject constructor(
         dataSource.setAnimationsEnabled(enabled)
     }
 
+    override suspend fun setIncludeNotesInExport(enabled: Boolean) {
+        dataSource.setIncludeNotesInExport(enabled)
+    }
+
     override suspend fun resetOnboarding() {
         dataSource.clearOnboardingFlag()
     }

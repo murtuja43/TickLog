@@ -51,6 +51,7 @@ data class PreferencesDto(
     val dateFormat: String,
     val weekStart: String,
     val animationsEnabled: Boolean,
+    val includeNotesInExport: Boolean = true,
     val scheduleStartEpochDay: Long?,
     val scheduleEndEpochDay: Long?,
 )
@@ -204,6 +205,7 @@ fun UserPreferences.toDto() = PreferencesDto(
     dateFormat = dateFormat.name,
     weekStart = weekStart.name,
     animationsEnabled = animationsEnabled,
+    includeNotesInExport = includeNotesInExport,
     scheduleStartEpochDay = scheduleStartDate?.toEpochDay(),
     scheduleEndEpochDay = scheduleEndDate?.toEpochDay(),
 )
@@ -214,6 +216,7 @@ fun PreferencesDto.toDomain() = UserPreferences(
     dateFormat = enumByNameOr(dateFormat, DateFormat.SYSTEM),
     weekStart = enumByNameOr(weekStart, WeekStart.MONDAY),
     animationsEnabled = animationsEnabled,
+    includeNotesInExport = includeNotesInExport,
     scheduleStartDate = scheduleStartEpochDay?.let(LocalDate::ofEpochDay),
     scheduleEndDate = scheduleEndEpochDay?.let(LocalDate::ofEpochDay),
 )

@@ -37,6 +37,7 @@ class SettingsViewModel @Inject constructor(
                     dateFormat = prefs.dateFormat,
                     weekStart = prefs.weekStart,
                     animationsEnabled = prefs.animationsEnabled,
+                    includeNotesInExport = prefs.includeNotesInExport,
                     appVersion = BuildConfig.VERSION_NAME,
                 )
             }
@@ -57,6 +58,9 @@ class SettingsViewModel @Inject constructor(
 
     fun onAnimationsToggled(enabled: Boolean) =
         launchPref { preferencesRepository.setAnimationsEnabled(enabled) }
+
+    fun onIncludeNotesToggled(enabled: Boolean) =
+        launchPref { preferencesRepository.setIncludeNotesInExport(enabled) }
 
     fun onResetOnboarding() =
         launchPref { preferencesRepository.resetOnboarding() }
