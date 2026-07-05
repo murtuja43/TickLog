@@ -14,6 +14,7 @@ import com.ticklog.domain.model.TaskScope
 import com.ticklog.domain.repository.ChecklistRepository
 import com.ticklog.domain.usecase.ObserveUserPreferencesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -97,23 +98,37 @@ class HomeViewModel @Inject constructor(
             .onEach { (_, checklist, overrides) -> pruneConfirmedOverrides(checklist, overrides) }
             .map { (range, checklist, overrides) -> buildDayState(date, range, checklist, overrides) }
 
-    /** Toggles a task's completion optimistically, persisting in the background. */
+    /**
+     * Toggles a task's completion optimistically, persisting in the background.
+     * If the write fails the optimistic overlay is removed — the checkbox snaps
+     * back to the stored state — and the failure is surfaced.
+     */
     fun onToggleTask(taskId: Long, currentlyCompleted: Boolean) {
         val desired = !currentlyCompleted
         optimisticCompletion.update { it + (taskId to desired) }
-        viewModelScope.launch { checklistRepository.setTaskCompleted(taskId, desired) }
+        viewModelScope.launch {
+            try {
+                checklistRepository.setTaskCompleted(taskId, desired)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: Exception) {
+                // Roll the optimistic UI back to whatever the database holds.
+                optimisticCompletion.update { it - taskId }
+                eventsChannel.send(HomeEvent.ActionFailed)
+            }
+        }
     }
 
     /** Adds a task on [date] with the chosen [scope]; no-op if the title is blank. */
     fun addTask(date: LocalDate, title: String, note: String?, scope: TaskScope) {
         val draft = TaskDraft.from(title, note) ?: return
-        viewModelScope.launch { checklistRepository.addTask(date, draft, scope) }
+        launchWrite { checklistRepository.addTask(date, draft, scope) }
     }
 
     /** Applies a title + note edit to a task with the chosen [scope]. */
     fun editTask(taskId: Long, title: String, note: String?, scope: TaskScope) {
         if (title.isBlank()) return
-        viewModelScope.launch {
+        launchWrite {
             checklistRepository.renameTask(taskId, title, scope)
             checklistRepository.updateTaskNote(taskId, note, scope)
         }
@@ -121,12 +136,12 @@ class HomeViewModel @Inject constructor(
 
     /** Duplicates a task on its own day. */
     fun duplicateTask(taskId: Long) {
-        viewModelScope.launch { checklistRepository.duplicateTask(taskId) }
+        launchWrite { checklistRepository.duplicateTask(taskId) }
     }
 
     /** Deletes a task with the chosen [scope] and offers an undo. */
     fun deleteTask(taskId: Long, scope: TaskScope) {
-        viewModelScope.launch {
+        launchWrite {
             val removed = checklistRepository.deleteTask(taskId, scope)
             if (removed.isNotEmpty()) {
                 lastDeleted = removed
@@ -140,7 +155,25 @@ class HomeViewModel @Inject constructor(
         val toRestore = lastDeleted
         lastDeleted = emptyList()
         if (toRestore.isEmpty()) return
-        viewModelScope.launch { checklistRepository.restoreTasks(toRestore) }
+        launchWrite { checklistRepository.restoreTasks(toRestore) }
+    }
+
+    /**
+     * Runs a repository write, catching persistence failures (e.g. SQLite or IO
+     * errors) so they surface a message instead of crashing the app. The UI is
+     * driven by the database flow, so on failure it simply stays on the last
+     * persisted state.
+     */
+    private fun launchWrite(block: suspend () -> Unit) {
+        viewModelScope.launch {
+            try {
+                block()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: Exception) {
+                eventsChannel.send(HomeEvent.ActionFailed)
+            }
+        }
     }
 
     /** Drops overrides the database has now caught up to, keeping the overlay tidy. */

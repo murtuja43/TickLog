@@ -65,4 +65,8 @@ interface ChecklistItemDao {
     /** All template items — used to serialise a full backup. */
     @Query("SELECT * FROM checklist_items")
     suspend fun getAll(): List<ChecklistItemEntity>
+
+    /** Deletes every template item — used to clear data during an atomic restore. */
+    @Query("DELETE FROM checklist_items")
+    suspend fun deleteAll()
 }

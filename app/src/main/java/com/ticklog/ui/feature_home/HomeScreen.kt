@@ -109,6 +109,7 @@ fun HomeScreen(
     // Show the undo snackbar whenever a delete happens.
     val undoLabel = stringResource(R.string.action_undo)
     val deletedMessage = stringResource(R.string.home_deleted_snackbar)
+    val actionFailedMessage = stringResource(R.string.home_action_failed)
     LaunchedEffect(viewModel, snackbarHostState) {
         viewModel.events.collect { event ->
             when (event) {
@@ -120,6 +121,11 @@ fun HomeScreen(
                     )
                     if (result == SnackbarResult.ActionPerformed) viewModel.undoDelete()
                 }
+
+                HomeEvent.ActionFailed -> snackbarHostState.showSnackbar(
+                    message = actionFailedMessage,
+                    duration = SnackbarDuration.Short,
+                )
             }
         }
     }

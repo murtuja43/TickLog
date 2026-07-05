@@ -136,4 +136,8 @@ interface DailyChecklistDao {
     /** All day rows — used to serialise a full backup. */
     @Query("SELECT * FROM daily_checklists")
     suspend fun getAll(): List<DailyChecklistEntity>
+
+    /** Deletes every day row — used to clear data during an atomic restore. */
+    @Query("DELETE FROM daily_checklists")
+    suspend fun deleteAll()
 }

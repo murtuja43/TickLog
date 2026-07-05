@@ -32,6 +32,16 @@ class CreateChecklistUseCase @Inject constructor(
                 IllegalArgumentException("End date must be on or after start date."),
             )
         }
+        if (range.exceedsMaxLength) {
+            // Guard against unbounded day generation (ANR/OOM). The UI also blocks
+            // over-long ranges; this is the domain-level safety net.
+            return Result.failure(
+                IllegalArgumentException(
+                    "Range spans ${range.lengthInDays} days; the maximum is " +
+                        "${DateRange.MAX_TRACKING_DAYS}.",
+                ),
+            )
+        }
         if (drafts.isEmpty()) {
             return Result.failure(
                 IllegalArgumentException("Add at least one checklist item."),

@@ -66,7 +66,12 @@ class SettingsViewModel @Inject constructor(
         launchPref { preferencesRepository.resetOnboarding() }
 
     private fun launchPref(block: suspend () -> Unit) {
-        viewModelScope.launch { block() }
+        viewModelScope.launch {
+            // Preference writes go to DataStore; guard against IO failures so a
+            // failed write can never crash the app. The UI is driven by the
+            // preferences flow, so on failure it simply keeps the previous value.
+            runCatching { block() }
+        }
     }
 
     private companion object {

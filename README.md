@@ -179,6 +179,55 @@ Build and install the debug APK on a connected device or emulator:
 To add the widget, long-press the home screen, choose **Widgets**, find
 **TickLog**, and drop it where you like — then resize it to taste.
 
+### Release build (signed AAB for Google Play)
+
+The release build is **shrunk and obfuscated** (R8 + resource shrinking) and is
+signed from a keystore you provide. **No keystore or password is stored in the
+repository** — signing material is read from a git-ignored `keystore.properties`
+(or environment variables in CI).
+
+**1. Generate your own upload keystore** (once). Keep the `.jks` file and its
+passwords safe and private — losing them means you can't update the app:
+
+```bash
+keytool -genkeypair -v \
+  -keystore ticklog-upload.jks \
+  -alias ticklog \
+  -keyalg RSA -keysize 2048 -validity 10000
+```
+
+**2. Point the build at it.** Copy the template and fill in your values:
+
+```bash
+cp keystore.properties.example keystore.properties
+# then edit keystore.properties:
+#   storeFile=ticklog-upload.jks
+#   storePassword=…
+#   keyAlias=ticklog
+#   keyPassword=…
+```
+
+`keystore.properties` and `*.jks`/`*.keystore` are git-ignored. In CI, set the
+`TICKLOG_KEYSTORE_FILE`, `TICKLOG_KEYSTORE_PASSWORD`, `TICKLOG_KEY_ALIAS` and
+`TICKLOG_KEY_PASSWORD` environment variables instead of the file.
+
+**3. Build the signed artifacts:**
+
+```bash
+# App Bundle (.aab) — the format you upload to Play
+./gradlew :app:bundleRelease
+# -> app/build/outputs/bundle/release/app-release.aab
+
+# Signed APK (handy for local install / sideloading)
+./gradlew :app:assembleRelease
+# -> app/build/outputs/apk/release/app-release.apk
+```
+
+If `keystore.properties` (and no env vars) is present, the release artifact is
+**signed** and ready to upload; if it's absent the build still succeeds but
+produces an **unsigned** artifact (so contributors without the keystore can
+still build). Enrol the app in **Play App Signing** and upload the `.aab`.
+
 ## Testing
 
 Business logic is covered by fast JVM unit tests: pure date/validation logic and

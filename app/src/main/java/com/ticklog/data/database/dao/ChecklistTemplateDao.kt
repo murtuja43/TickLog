@@ -46,6 +46,10 @@ interface ChecklistTemplateDao {
     @Query("SELECT * FROM checklist_templates")
     suspend fun getAll(): List<ChecklistTemplateEntity>
 
+    /** Deletes every template — used to clear data as part of an atomic restore. */
+    @Query("DELETE FROM checklist_templates")
+    suspend fun deleteAll()
+
     /** Bulk insert preserving ids — used to restore a full backup. */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(templates: List<ChecklistTemplateEntity>)

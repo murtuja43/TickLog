@@ -145,10 +145,15 @@ private fun OnboardingContent(
                     onClick = { activePicker = PickerTarget.END },
                 )
 
-                if (uiState.hasRangeError) {
+                val errorMessage = when {
+                    uiState.hasRangeError -> stringResource(R.string.onboarding_error_range)
+                    uiState.hasTooLongRange -> stringResource(R.string.onboarding_error_too_long)
+                    else -> null
+                }
+                if (errorMessage != null) {
                     Spacer(Modifier.size(TickLogTheme.spacing.small))
                     Text(
-                        text = stringResource(R.string.onboarding_error_range),
+                        text = errorMessage,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center,

@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     Legacy auto-backup rules (Android 11 and below).
-    The Room database and DataStore preferences are included so a user's full
-    history survives a device migration. Nothing is excluded.
+
+    Backup is fully disabled via allowBackup="false" in the manifest, but lint
+    requires a fullBackupContent resource whenever dataExtractionRules is set and
+    minSdkVersion predates Android 12. For consistency this excludes every domain
+    so nothing would be backed up even if the master switch changed. On Android
+    12+ see data_extraction_rules.xml instead.
 -->
 <full-backup-content>
-    <include domain="database" path="." />
-    <include domain="file" path="datastore/" />
+    <exclude domain="file" path="." />
+    <exclude domain="database" path="." />
+    <exclude domain="sharedpref" path="." />
+    <exclude domain="external" path="." />
 </full-backup-content>

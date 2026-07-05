@@ -28,9 +28,10 @@ captures/
 .externalNativeBuild/
 .cxx/
 
-# --- Keystores (never commit signing material) ---------------------------------
+# --- Keystores & signing (never commit signing material) -----------------------
 *.jks
 *.keystore
+keystore.properties
 
 # --- OS / editor noise ---------------------------------------------------------
 .DS_Store

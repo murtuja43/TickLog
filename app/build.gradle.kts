@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.io.FileInputStream
+import java.util.Properties
 
 // =============================================================================
 // :app module build script.
@@ -18,6 +20,27 @@ plugins {
     alias(libs.plugins.hilt)
 }
 
+// -----------------------------------------------------------------------------
+// Release signing.
+// -----------------------------------------------------------------------------
+// Signing material is read from a git-ignored `keystore.properties` at the repo
+// root (see keystore.properties.example), or from environment variables in CI.
+// Nothing is hardcoded and no keystore is committed. When no signing config is
+// present the release build is simply left unsigned, so the project still
+// configures and builds for contributors who don't hold the keystore.
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties().apply {
+    if (keystorePropertiesFile.exists()) {
+        FileInputStream(keystorePropertiesFile).use { load(it) }
+    }
+}
+
+fun signingProperty(key: String, env: String): String? =
+    keystoreProperties.getProperty(key) ?: System.getenv(env)
+
+val hasReleaseSigning: Boolean =
+    signingProperty("storeFile", "TICKLOG_KEYSTORE_FILE") != null
+
 android {
     namespace = "com.ticklog"
     compileSdk = 35
@@ -35,6 +58,21 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
 
+    signingConfigs {
+        // Only defined when signing material is available (keystore.properties or
+        // CI env vars); otherwise the release build is left unsigned.
+        if (hasReleaseSigning) {
+            create("release") {
+                // storeFile is resolved relative to the repo root, where
+                // keystore.properties lives (see keystore.properties.example).
+                storeFile = rootProject.file(signingProperty("storeFile", "TICKLOG_KEYSTORE_FILE")!!)
+                storePassword = signingProperty("storePassword", "TICKLOG_KEYSTORE_PASSWORD")
+                keyAlias = signingProperty("keyAlias", "TICKLOG_KEY_ALIAS")
+                keyPassword = signingProperty("keyPassword", "TICKLOG_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         debug {
             // Distinct id so a debug build can sit next to a release install.
@@ -42,14 +80,17 @@ android {
             isMinifyEnabled = false
         }
         release {
-            // Phase 1 ships without code shrinking so the scaffold builds and
-            // runs deterministically; R8 + keep rules are enabled in a later
-            // hardening phase once the surface area is stable.
-            isMinifyEnabled = false
+            // Shrink, obfuscate and strip unused resources for a lean, hardened
+            // store build. Keep rules live in proguard-rules.pro.
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            // Signs the APK/AAB when a keystore is configured; null (unsigned)
+            // otherwise so contributors can still build a release artifact.
+            signingConfig = signingConfigs.findByName("release")
         }
     }
 
@@ -154,9 +195,6 @@ dependencies {
 
     // --- Serialization (offline backup format) -------------------------------
     implementation(libs.kotlinx.serialization.json)
-
-    // --- Image loading (reserved for future avatar / attachment support) -----
-    implementation(libs.coil.compose)
 
     // --- Unit tests ----------------------------------------------------------
     testImplementation(libs.junit)

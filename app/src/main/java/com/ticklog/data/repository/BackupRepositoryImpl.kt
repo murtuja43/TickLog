@@ -106,10 +106,23 @@ class BackupRepositoryImpl @Inject constructor(
     )
 
     private suspend fun restore(payload: BackupPayload) {
-        // Wipe first (clearAllTables manages its own transaction), then re-insert
-        // in foreign-key order inside a single transaction.
-        database.clearAllTables()
+        // Clear-then-reinsert happens inside ONE transaction, so the restore is
+        // all-or-nothing: if any insert fails — a malformed-but-checksum-valid
+        // file, a constraint violation — or the process is killed mid-restore,
+        // SQLite rolls the whole transaction back and the existing data is left
+        // completely intact. (clearAllTables() cannot be used here because it
+        // runs in its own transaction, which would leave a window of total data
+        // loss; explicit per-table DELETEs let the wipe share the transaction.)
         database.withTransaction {
+            // Delete children before parents.
+            dailyItemDao.deleteAll()
+            completionHistoryDao.deleteAll()
+            dailyChecklistDao.deleteAll()
+            itemDao.deleteAll()
+            templateDao.deleteAll()
+            settingsDao.deleteAll()
+
+            // Re-insert parents before children.
             templateDao.insertAll(payload.templates.map { it.toEntity() })
             itemDao.insertAll(payload.items.map { it.toEntity() })
             dailyChecklistDao.insertAll(payload.dailyChecklists.map { it.toEntity() })
@@ -117,6 +130,10 @@ class BackupRepositoryImpl @Inject constructor(
             completionHistoryDao.insertAll(payload.completionHistory.map { it.toEntity() })
             settingsDao.insertAll(payload.settings.map { it.toEntity() })
         }
+        // Preferences live in DataStore (outside SQLite) and cannot join the Room
+        // transaction, so they are applied only after the database restore has
+        // committed successfully. DataStore.edit is itself atomic, and this write
+        // happens last so a failure here can never destroy the restored data.
         preferencesDataSource.replaceAll(payload.preferences.toDomain())
     }
 

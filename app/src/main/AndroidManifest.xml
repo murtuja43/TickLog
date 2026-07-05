@@ -11,9 +11,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!--
+        Backup is disabled so data never leaves the device. allowBackup="false"
+        turns off cloud backup (all API levels); data_extraction_rules then
+        excludes every domain from BOTH cloud backup and device-to-device
+        transfer (on Android 12+, allowBackup no longer covers D2D). Migration is
+        served by the app's own explicit, user-controlled Backup & Restore. This
+        keeps the privacy claim literally true and the Play Data Safety answers
+        simple: no data collected, shared, or transferred off-device.
+    -->
     <application
         android:name=".TickLogApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"

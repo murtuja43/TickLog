@@ -26,6 +26,7 @@
     <string name="onboarding_end_date">End date</string>
     <string name="onboarding_select_date">Select date</string>
     <string name="onboarding_error_range">The end date must be on or after the start date.</string>
+    <string name="onboarding_error_too_long">That range is too long. Please choose a range of up to 2 years.</string>
 
     <!-- Onboarding step 2: checklist builder -->
     <string name="builder_title">Add your tasks</string>
@@ -50,6 +51,7 @@
     <string name="home_next_day">Next day</string>
     <string name="home_toggle_task">Toggle task</string>
     <string name="home_deleted_snackbar">Task deleted</string>
+    <string name="home_action_failed">Couldn\'t save your change. Please try again.</string>
     <string name="home_out_of_range_title">No checklist for this day</string>
     <string name="home_out_of_range_subtitle">This day is outside the range you set up.</string>
 

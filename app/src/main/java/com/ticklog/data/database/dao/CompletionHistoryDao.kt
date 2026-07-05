@@ -43,6 +43,10 @@ interface CompletionHistoryDao {
     @Query("SELECT * FROM completion_history")
     suspend fun getAll(): List<CompletionHistoryEntity>
 
+    /** Deletes every ledger row — used to clear data during an atomic restore. */
+    @Query("DELETE FROM completion_history")
+    suspend fun deleteAll()
+
     /** Bulk insert preserving ids — used to restore a full backup. */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(records: List<CompletionHistoryEntity>)

@@ -105,6 +105,14 @@ data class DateRange(
     val lengthInDays: Long
         get() = java.time.temporal.ChronoUnit.DAYS.between(start, end) + 1
 
+    /**
+     * True when the range spans more than [MAX_TRACKING_DAYS]. Generation creates
+     * one checklist (and its tasks) per day, so an unbounded range would risk an
+     * ANR or OOM; callers reject such ranges before generating anything.
+     */
+    val exceedsMaxLength: Boolean
+        get() = lengthInDays > MAX_TRACKING_DAYS
+
     /** True when [date] falls within the inclusive range. */
     operator fun contains(date: LocalDate): Boolean =
         !date.isBefore(start) && !date.isAfter(end)
@@ -119,5 +127,14 @@ data class DateRange(
         return generateSequence(start) { current ->
             if (current.isBefore(end)) current.plusDays(1) else null
         }.toList()
+    }
+
+    companion object {
+        /**
+         * The maximum number of days a tracking range may span (about two years).
+         * Chosen to comfortably cover real-world use while keeping onboarding's
+         * one-checklist-per-day generation fast and memory-safe.
+         */
+        const val MAX_TRACKING_DAYS: Long = 731
     }
 }

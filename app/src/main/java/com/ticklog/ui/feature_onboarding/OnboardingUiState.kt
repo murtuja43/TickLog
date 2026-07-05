@@ -1,6 +1,7 @@
 package com.ticklog.ui.feature_onboarding
 
 import androidx.compose.runtime.Immutable
+import com.ticklog.domain.model.DateRange
 import java.time.LocalDate
 
 /**
@@ -24,7 +25,17 @@ data class OnboardingUiState(
     val hasRangeError: Boolean
         get() = startDate != null && endDate != null && endDate.isBefore(startDate)
 
-    /** True when a valid range is selected and nothing is in flight. */
+    /**
+     * True when the chosen range is valid but longer than the supported maximum
+     * ([DateRange.MAX_TRACKING_DAYS]). Surfaced so the user is told why they can't
+     * continue instead of hitting an unbounded generation.
+     */
+    val hasTooLongRange: Boolean
+        get() = startDate != null && endDate != null && !hasRangeError &&
+            DateRange(startDate, endDate).exceedsMaxLength
+
+    /** True when a valid, in-range selection is made and nothing is in flight. */
     val canContinue: Boolean
-        get() = startDate != null && endDate != null && !hasRangeError && !isSaving
+        get() = startDate != null && endDate != null &&
+            !hasRangeError && !hasTooLongRange && !isSaving
 }

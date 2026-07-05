@@ -51,6 +51,23 @@ class DateRangeTest {
     }
 
     @Test
+    fun `a range at the maximum length is allowed`() {
+        // lengthInDays == MAX_TRACKING_DAYS (inclusive), so it does not exceed.
+        val range = DateRange(base, base.plusDays(DateRange.MAX_TRACKING_DAYS - 1))
+
+        assertThat(range.lengthInDays).isEqualTo(DateRange.MAX_TRACKING_DAYS)
+        assertThat(range.exceedsMaxLength).isFalse()
+    }
+
+    @Test
+    fun `a range one day over the maximum is rejected`() {
+        val range = DateRange(base, base.plusDays(DateRange.MAX_TRACKING_DAYS))
+
+        assertThat(range.lengthInDays).isEqualTo(DateRange.MAX_TRACKING_DAYS + 1)
+        assertThat(range.exceedsMaxLength).isTrue()
+    }
+
+    @Test
     fun `datesInclusive spans across a month boundary`() {
         val start = LocalDate.of(2026, 1, 30)
         val end = LocalDate.of(2026, 2, 2)

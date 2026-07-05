@@ -5,6 +5,35 @@ All notable changes to TickLog are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — release hardening
+
+### Fixed
+
+- **Backup restore is now atomic.** Clearing and re-inserting happen inside a
+  single database transaction, so a failed or interrupted restore rolls back and
+  leaves existing data completely intact (previously a mid-restore failure could
+  empty the database).
+- **Writes no longer crash the app.** Checklist and preference writes handle
+  `SQLite`/IO failures gracefully; a failed task toggle rolls the checkbox back
+  and shows a message.
+
+### Added
+
+- **Signed release builds.** R8 shrinking/obfuscation and resource shrinking are
+  enabled for release, with keep rules that keep backup/export working. Signing
+  reads from a git-ignored `keystore.properties` (or CI env vars); see the README
+  for generating a keystore and building a signed `.aab`.
+- **Onboarding range limit** (up to ~2 years) with a clear message, preventing
+  ANR/OOM from generating an unbounded number of days.
+
+### Changed
+
+- **Auto Backup disabled** (`allowBackup=false`). The app's data stays on the
+  device — migration is handled by the built-in, user-controlled Backup &
+  Restore — so the privacy promise holds and the Play Data Safety answers stay
+  simple (no data collected, shared, or transferred off-device).
+- Removed the unused Coil image-loading dependency.
+
 ## [1.0.0] — 2026-07-04
 
 The first stable release of TickLog: a complete, offline-first daily checklist

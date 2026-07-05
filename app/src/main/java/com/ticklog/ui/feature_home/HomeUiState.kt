@@ -43,4 +43,7 @@ sealed interface DayUiState {
 sealed interface HomeEvent {
     /** A delete just happened and can be undone; [count] rows were removed. */
     data class TasksDeleted(val count: Int) : HomeEvent
+
+    /** A write (toggle, add, edit, delete, undo) failed to persist. */
+    data object ActionFailed : HomeEvent
 }

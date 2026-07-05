@@ -8,6 +8,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
+import com.ticklog.data.backup.BackupDocument
+import com.ticklog.data.backup.BackupPayload
 import com.ticklog.data.database.TickLogDatabase
 import com.ticklog.data.datastore.UserPreferencesDataSource
 import com.ticklog.domain.model.BackupError
@@ -30,6 +32,7 @@ import org.robolectric.annotation.Config
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.security.MessageDigest
 import java.time.LocalDate
 
 /**
@@ -128,5 +131,66 @@ class BackupRepositoryImplTest {
             ByteArrayInputStream("this is not a backup".encodeToByteArray()),
         )
         assertThat(result).isEqualTo(BackupResult.Failure(BackupError.INVALID_FILE))
+    }
+
+    @Test
+    fun `a backup from a newer format version is rejected`() = runBlocking {
+        seed()
+        val text = ByteArrayOutputStream().also { backupRepository.exportTo(it) }
+            .toByteArray().decodeToString()
+        val doc = testJson.decodeFromString(BackupDocument.serializer(), text)
+        // Bump the format version beyond what this build understands. The version
+        // gate is checked before the checksum, so no re-hashing is needed.
+        val newer = doc.copy(formatVersion = doc.formatVersion + 1)
+        val bytes = testJson.encodeToString(BackupDocument.serializer(), newer).encodeToByteArray()
+
+        val result = backupRepository.importFrom(ByteArrayInputStream(bytes))
+
+        assertThat(result).isEqualTo(BackupResult.Failure(BackupError.UNSUPPORTED_VERSION))
+    }
+
+    @Test
+    fun `a failing restore rolls back and leaves existing data completely intact`() = runBlocking {
+        seed()
+        val validText = ByteArrayOutputStream().also { backupRepository.exportTo(it) }
+            .toByteArray().decodeToString()
+        val validDoc = testJson.decodeFromString(BackupDocument.serializer(), validText)
+
+        // Corrupt the payload with a duplicate task row (same primary key). The
+        // second insert violates the UNIQUE primary-key constraint, so the restore
+        // transaction fails partway through re-inserting — but the checksum is
+        // recomputed to stay valid so the file passes validation and actually
+        // reaches the restore, exercising the rollback path.
+        val duplicate = validDoc.payload.dailyItems.first()
+        val corruptPayload = validDoc.payload.copy(
+            dailyItems = validDoc.payload.dailyItems + duplicate,
+        )
+        val corruptDoc = validDoc.copy(
+            checksum = sha256Hex(testJson.encodeToString(BackupPayload.serializer(), corruptPayload)),
+            payload = corruptPayload,
+        )
+        val corruptBytes =
+            testJson.encodeToString(BackupDocument.serializer(), corruptDoc).encodeToByteArray()
+
+        val before = checklistRepository.observeDaySummaries().first()
+
+        val result = backupRepository.importFrom(ByteArrayInputStream(corruptBytes))
+
+        assertThat(result).isEqualTo(BackupResult.Failure(BackupError.RESTORE_FAILED))
+        // The transaction rolled back: the original data is exactly as it was, and
+        // in particular the database was never left empty.
+        val after = checklistRepository.observeDaySummaries().first()
+        assertThat(after).isEqualTo(before)
+        assertThat(after).hasSize(3)
+    }
+
+    /** Matches [BackupRepositoryImpl]'s private checksum: SHA-256 hex of the payload JSON. */
+    private fun sha256Hex(text: String): String =
+        MessageDigest.getInstance("SHA-256")
+            .digest(text.encodeToByteArray())
+            .joinToString("") { "%02x".format(it) }
+
+    private companion object {
+        val testJson = Json { ignoreUnknownKeys = true; encodeDefaults = true }
     }
 }
